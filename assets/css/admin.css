@@ -1,0 +1,1079 @@
+/**
+ * Email Studio for HivePress - Studio screen.
+ *
+ * Every rule is scoped under .hpes or .hpes-panel, both of which are this plugin's own class names,
+ * so nothing here can restyle another plugin's screen if the stylesheet is ever loaded too widely.
+ * Colours are WordPress's own admin palette rather than invented ones, so the screen ages with
+ * wp-admin instead of against it.
+ */
+
+.hpes {
+	--hpes-border: #dcdcde;
+	--hpes-muted: #646970;
+	--hpes-accent: #2271b1;
+	--hpes-surface: #fff;
+}
+
+/*
+ * Room for the floating Save tab.
+ *
+ * The shared chrome pins that control to the right edge of the viewport, which is fine on the other
+ * plugins because a HivePress settings tab is a narrow form with nothing out there. This screen puts
+ * a full-width table at the right edge instead, so the tab landed on top of the Disable button of
+ * every row. Reserving its width here is a change to THIS page rather than to the shared control,
+ * which stays identical to every sibling's. Below 782px the tab becomes a bar along the bottom and
+ * the reservation is not wanted.
+ */
+@media screen and (min-width: 783px) {
+	.wrap.hpes {
+		padding-right: 48px;
+	}
+}
+
+/* Header
+   ------------------------------------------------------------------------ */
+
+.hpes__header {
+	align-items: flex-start;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	justify-content: space-between;
+	margin: 0 0 20px;
+}
+
+.hpes__title {
+	margin: 0 0 4px;
+	padding: 0;
+}
+
+.hpes__subtitle {
+	color: var(--hpes-muted);
+	margin: 0;
+	max-width: 68ch;
+}
+
+.hpes__design-link {
+	flex-shrink: 0;
+}
+
+/* Figures
+   ------------------------------------------------------------------------ */
+
+.hpes__stats {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	margin: 0 0 20px;
+}
+
+.hpes__stat {
+	align-items: center;
+	background: var(--hpes-surface);
+	border: 1px solid var(--hpes-border);
+	border-radius: 4px;
+	display: flex;
+	gap: 12px;
+	padding: 14px 16px;
+}
+
+/* A Dashicon rather than Font Awesome: WordPress loads Dashicons on every admin screen itself, so
+   the glyph cannot depend on HivePress's asset enqueuing having run. */
+.hpes__stat-icon {
+	/* WordPress publishes the chosen admin colour scheme's accent as --wp-admin-theme-color, so the
+	   icons follow whatever the reader picked under Users > Profile rather than staying the default
+	   scheme's blue on all eight of them. The fallback is that same default. */
+	color: var(--wp-admin-theme-color, var(--hpes-accent));
+	flex-shrink: 0;
+	font-size: 24px;
+	height: 24px;
+	width: 24px;
+}
+
+.hpes__stat-body {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.hpes__stat-value {
+	font-size: 24px;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.hpes__stat-label {
+	color: var(--hpes-muted);
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: .02em;
+}
+
+/* Sections
+   ------------------------------------------------------------------------ */
+
+.hpes__section {
+	margin: 0 0 32px;
+	scroll-margin-top: calc(var(--hpes-admin-bar) + 64px);
+}
+
+.hpes__section > h2 {
+	border-top: 1px solid var(--hpes-border);
+	margin: 0 0 8px;
+	padding-top: 24px;
+}
+
+.hpes__section:first-of-type > h2 {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.hpes__section-note {
+	color: var(--hpes-muted);
+	margin: 0 0 12px;
+	max-width: 78ch;
+}
+
+.hpes__notice {
+	margin: 0 0 20px;
+}
+
+/* Toolbar
+   ------------------------------------------------------------------------ */
+
+.hpes__toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0 0 12px;
+}
+
+.hpes__search input {
+	min-width: 260px;
+}
+
+/* Table
+   ------------------------------------------------------------------------ */
+
+/* Wide content scrolls inside its own box; the page must never scroll sideways. The four columns
+   need about 425px, which is more than a 390px phone has. */
+.hpes__table-wrap {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.hpes__table {
+	border-radius: 4px;
+	table-layout: fixed;
+}
+
+/*
+ * Explicit column widths.
+ *
+ * With the automatic layout the browser sizes columns by their content, and the first column carries
+ * a name, a subject and a description while the other three carry a few words each - so on a wide
+ * screen the email column took nearly everything and Plugin, Goes to and Status ended up huddled
+ * against the actions. Fixed layout plus these widths keeps the reading column generous without
+ * letting it starve the rest.
+ */
+.hpes__table th:nth-child(1) { width: 38%; }
+.hpes__table th:nth-child(2) { width: 14%; }
+.hpes__table th:nth-child(3) { width: 10%; }
+.hpes__table th:nth-child(4) { width: 16%; }
+.hpes__table th:nth-child(5) { width: 22%; }
+
+/* Fixed layout will not widen a cell for a long unbroken word, so the two that can carry one - an
+   email name and a shop address - wrap instead of overflowing. */
+.hpes__cell-email,
+.hpes__cell-recipient {
+	overflow-wrap: break-word;
+}
+
+/* The log and campaign tables have their own shape; only the email list is being sized here. */
+.hpes__log-table {
+	table-layout: auto;
+}
+
+.hpes__table th {
+	font-weight: 600;
+}
+
+.hpes__table td {
+	vertical-align: top;
+}
+
+.hpes__row.is-disabled .hpes__cell-email {
+	opacity: .6;
+}
+
+.hpes__cell-email {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.hpes__cell-source {
+	color: var(--hpes-muted);
+	white-space: nowrap;
+}
+
+.hpes__label {
+	font-size: 14px;
+}
+
+.hpes__subject {
+	color: #3c434a;
+	display: block;
+	font-size: 13px;
+}
+
+.hpes__description {
+	color: var(--hpes-muted);
+	display: block;
+	font-size: 12px;
+	max-width: 62ch;
+}
+
+.hpes__cell-actions {
+	white-space: nowrap;
+}
+
+.hpes__cell-actions .button,
+.hpes__cell-actions .button-link {
+	margin: 0 6px 4px 0;
+}
+
+.hpes__cell-actions .button-link {
+	color: var(--hpes-accent);
+}
+
+.hpes__empty {
+	color: var(--hpes-muted);
+	padding: 16px 0;
+}
+
+/* Badges
+   ------------------------------------------------------------------------ */
+
+.hpes__badge {
+	border-radius: 3px;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.6;
+	margin: 0 4px 4px 0;
+	padding: 1px 8px;
+	white-space: nowrap;
+}
+
+.hpes__badge--default {
+	background: #f0f0f1;
+	color: #50575e;
+}
+
+.hpes__badge--custom {
+	background: #e5f2fb;
+	color: #0a4b78;
+}
+
+.hpes__badge--off {
+	background: #fcf0f1;
+	color: #8a2424;
+}
+
+.hpes__badge--critical {
+	background: #fcf3e6;
+	color: #7a4c07;
+}
+
+.hpes__badge--sent {
+	background: #edfaef;
+	color: #1c6b30;
+}
+
+.hpes__badge--failed {
+	background: #fcf0f1;
+	color: #8a2424;
+}
+
+.hpes__badge--test {
+	background: #f0f0f1;
+	color: #50575e;
+}
+
+.hpes__error {
+	color: var(--hpes-muted);
+	display: block;
+	font-size: 12px;
+}
+
+/* Delivery log
+   ------------------------------------------------------------------------ */
+
+.hpes__log {
+	margin: 32px 0 0;
+}
+
+.hpes__log-actions {
+	margin: 0 0 8px;
+	text-align: right;
+}
+
+.hpes__log-empty {
+	color: var(--hpes-muted);
+	max-width: 72ch;
+}
+
+/* Preview panel
+   ------------------------------------------------------------------------ */
+
+.hpes-panel__backdrop {
+	background: rgba(0, 0, 0, .5);
+	inset: 0;
+	position: fixed;
+	z-index: 100000;
+}
+
+.hpes-panel__dialog {
+	background: #f6f7f7;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	max-width: 100%;
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 720px;
+	z-index: 100001;
+}
+
+.hpes-panel__head {
+	align-items: flex-start;
+	background: #fff;
+	border-bottom: 1px solid var(--hpes-border, #dcdcde);
+	display: flex;
+	gap: 12px;
+	justify-content: space-between;
+	padding: 16px 20px;
+}
+
+.hpes-panel__title {
+	font-size: 16px;
+	margin: 0;
+}
+
+.hpes-panel__subject {
+	color: #646970;
+	font-size: 13px;
+	margin: 2px 0 0;
+}
+
+.hpes-panel__close {
+	color: #646970;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.hpes-panel__controls {
+	background: #fff;
+	border-bottom: 1px solid var(--hpes-border, #dcdcde);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	padding: 10px 20px;
+}
+
+.hpes-panel__group {
+	display: inline-flex;
+}
+
+/* The browser hides [hidden] with display:none from its own stylesheet, which any author rule
+   setting display beats on specificity. Without this, the version switch stayed on screen for
+   emails that have no edited version to compare against - offering a choice between two identical
+   previews. Anything given a display value needs its own [hidden] rule. */
+.hpes-panel__group[hidden] {
+	display: none;
+}
+
+.hpes-panel__group .button {
+	border-radius: 0;
+	margin: 0;
+}
+
+.hpes-panel__group .button:first-child {
+	border-radius: 3px 0 0 3px;
+}
+
+.hpes-panel__group .button:last-child {
+	border-radius: 0 3px 3px 0;
+}
+
+.hpes-panel__group .button.is-active {
+	background: #f0f6fc;
+	border-color: #2271b1;
+	color: #0a4b78;
+}
+
+.hpes-panel__stage {
+	display: flex;
+	flex: 1 1 auto;
+	justify-content: center;
+	min-height: 0;
+	overflow: auto;
+	padding: 16px;
+}
+
+.hpes-panel__frame {
+	background: #fff;
+	border: 1px solid var(--hpes-border, #dcdcde);
+	height: 100%;
+	min-height: 320px;
+	width: 100%;
+}
+
+/* The mobile width is the narrow end of a real phone, matching the width the rest of the house
+   tests front-end output at, so what the panel shows is the case most likely to break. */
+.hpes-panel__stage[data-device="mobile"] .hpes-panel__frame {
+	max-width: 390px;
+}
+
+.hpes-panel__tokens {
+	background: #fff;
+	border-top: 1px solid var(--hpes-border, #dcdcde);
+	max-height: 40vh;
+	overflow: auto;
+	padding: 12px 20px;
+}
+
+.hpes-panel__tokens > summary {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.hpes-panel__foot {
+	background: #fff;
+	border-top: 1px solid var(--hpes-border, #dcdcde);
+	padding: 12px 20px 16px;
+}
+
+.hpes-panel__note {
+	color: #646970;
+	font-size: 12px;
+	margin: 0 0 8px;
+}
+
+.hpes-panel__send {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.hpes-panel__send input {
+	flex: 1 1 220px;
+}
+
+.hpes-panel__result {
+	margin: 8px 0 0;
+	min-height: 1.4em;
+}
+
+.hpes-panel__result.is-error {
+	color: #8a2424;
+}
+
+body.hpes-panel-open {
+	overflow: hidden;
+}
+
+/* Token list, shared with the email edit screen
+   ------------------------------------------------------------------------ */
+
+.hpes-tokens__group {
+	margin: 0 0 14px;
+}
+
+.hpes-tokens__title {
+	margin: 0 0 2px;
+}
+
+.hpes-tokens__note {
+	margin: 0 0 6px;
+}
+
+.hpes-tokens__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 10px;
+	margin: 0;
+}
+
+.hpes-tokens__item {
+	align-items: baseline;
+	display: inline-flex;
+	gap: 4px;
+	margin: 0;
+}
+
+.hpes-tokens__item code {
+	cursor: pointer;
+}
+
+.hpes-tokens__label {
+	color: #646970;
+	font-size: 12px;
+}
+
+/* Narrow screens
+   ------------------------------------------------------------------------ */
+
+@media screen and (max-width: 782px) {
+
+	.hpes__cell-actions {
+		white-space: normal;
+	}
+
+	.hpes-panel__dialog {
+		width: 100%;
+	}
+
+	.hpes__search input {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.hpes__toolbar {
+		display: grid;
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Composer
+   ------------------------------------------------------------------------ */
+
+.hpes-compose {
+	background: var(--hpes-surface, #fff);
+	border: 1px solid var(--hpes-border, #dcdcde);
+	border-radius: 4px;
+	max-width: 900px;
+	padding: 16px 20px;
+}
+
+.hpes-compose__row {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+}
+
+/* The browser hides [hidden] from its own stylesheet, which the `display: flex` above beats on
+   specificity - so the "People" picker stayed on screen for every audience, including the ones that
+   do not use it. Anything given a display value needs its own [hidden] rule; this is the second
+   place in this file that has caught it. */
+.hpes-compose__row[hidden] {
+	display: none;
+}
+
+.hpes-compose__label {
+	flex: 0 0 110px;
+	font-weight: 600;
+}
+
+.hpes-compose__count {
+	color: var(--hpes-muted, #646970);
+	font-size: 12px;
+}
+
+.hpes-compose__editor {
+	margin: 12px 0;
+}
+
+.hpes-compose__editor .hpes-compose__label {
+	display: block;
+	margin: 0 0 6px;
+}
+
+.hpes-compose__actions {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	margin: 12px 0 0;
+}
+
+.hpes-compose__result {
+	color: var(--hpes-muted, #646970);
+}
+
+/* The composer's user picker is a HivePress Select2 control, which sizes itself to its container
+   rather than to the page. */
+.hpes-compose .hp-field--select {
+	max-width: 480px;
+	min-width: 260px;
+}
+
+.hpes-edit-preview .dashicons {
+	margin-right: 2px;
+	vertical-align: text-bottom;
+}
+
+/* Shared settings chrome
+   ------------------------------------------------------------------------
+   Copied from the reference implementation (resources/hivepress-settings.md,
+   "The settings anchor nav: one shared marker class"). The shared marker
+   classes carry no styling at all; everything here hangs off this plugin's own
+   prefixed class, so one plugin's chrome can never restyle another's.
+
+   NOTHING HERE PAINTS THE TWO BUTTONS. They carry core's own `button` and
+   `button-primary` classes and WordPress supplies the colours, because every
+   user picks an Admin Colour Scheme and each one repaints those classes. A hex
+   here would match the default scheme and no other. Layout only.
+   ------------------------------------------------------------------------ */
+
+:root {
+	--hpes-admin-bar: 32px;
+}
+
+@media screen and (max-width: 782px) {
+	:root {
+		--hpes-admin-bar: 46px;
+	}
+}
+
+/* The admin bar stops being fixed below 601px and scrolls away with the page, so nothing needs to
+   clear it there. */
+@media screen and (max-width: 600px) {
+	:root {
+		--hpes-admin-bar: 0px;
+	}
+}
+
+.hpes-settings-nav {
+	align-items: center;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 8px;
+	margin: 16px 0;
+	padding: 12px 16px;
+	position: sticky;
+	top: var(--hpes-admin-bar);
+	z-index: 100;
+}
+
+.hpes-settings-nav__label {
+	color: #50575e;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.6;
+}
+
+.hpes-settings-nav a {
+	border: 1px solid #dcdcde;
+	border-radius: 9999px;
+	display: inline-block;
+	font-size: 12px;
+	line-height: 1.6;
+	padding: 3px 10px;
+	text-decoration: none;
+}
+
+.hpes-settings-nav a:hover,
+.hpes-settings-nav a:focus {
+	border-color: #2271b1;
+}
+
+/*
+ * `writing-mode: vertical-rl` is what makes the Save control sideways, and the choice is not
+ * cosmetic: it turns the LAYOUT BOX on its side, so the control is about 36px wide and as tall as
+ * its label. Rotating a horizontal box with `transform` instead leaves the box its original width,
+ * reserving a wide strip of the page and covering whatever is under it.
+ */
+.wp-core-ui .hpes-settings-save {
+	border-inline-end: 0;
+	border-radius: 4px 0 0 4px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+	display: block;
+	font-size: 13px;
+	height: auto;
+	letter-spacing: .2px;
+	line-height: 1.4;
+	padding: 14px 10px;
+
+	/* Physical `right`, not `inset-inline-end`: a logical inset resolves against the ELEMENT'S own
+	   writing mode, so on a vertical-rl box the inline axis is the vertical one and the control
+	   would pin to the wrong edge. */
+	position: fixed;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	writing-mode: vertical-rl;
+	z-index: 100;
+}
+
+.hpes-settings-save .dashicons {
+	display: none;
+}
+
+/*
+ * The one core declaration these two controls have to undo. wp-admin's buttons.css sets
+ * `line-height: 1.9` on a dashicon inside a button, which drops the glyph onto the text baseline of
+ * an ordinary horizontal button. Both of these centre their glyph with flexbox instead, so the glyph
+ * keeps its 20px box but is drawn inside a 38px line box and paints low while the BOX measures as
+ * perfectly centred - an alignment fault with nothing visibly misaligned.
+ */
+.wp-core-ui .hpes-settings-save .dashicons,
+.wp-core-ui .hpes-settings-top .dashicons {
+	line-height: 1;
+}
+
+.wp-core-ui .hpes-settings-top {
+	align-items: center;
+	bottom: 20px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+	display: flex;
+	height: 40px;
+	inset-inline-end: 20px;
+	justify-content: center;
+	padding: 0;
+	position: fixed;
+	border-radius: 50%;
+	width: 40px;
+	z-index: 100;
+}
+
+.wp-core-ui .hpes-settings-top[hidden] {
+	display: none;
+}
+
+/*
+ * On a phone the sideways Save tab would sit over the fields and the two round buttons would fight
+ * for the same corner, so Save becomes a bar along the bottom. 782px is where wp-admin itself
+ * switches to its touch layout. The .wp-core-ui prefix is carried down here too: a media query
+ * grants no extra specificity, so without it the tab would stay sideways on a phone.
+ */
+@media screen and (max-width: 782px) {
+
+	.wp-core-ui .hpes-settings-save {
+		align-items: center;
+		border-inline-end: 0;
+		border-radius: 0;
+		bottom: 0;
+		display: flex;
+		gap: 6px;
+		justify-content: center;
+		left: 0;
+		padding: 12px;
+		right: 0;
+		top: auto;
+		transform: none;
+		writing-mode: horizontal-tb;
+	}
+
+	/* The text runs left to right again down here, so the tick reads. */
+	.hpes-settings-save .dashicons {
+		display: inline-flex;
+		font-size: 16px;
+		height: 16px;
+		width: 16px;
+	}
+
+	.wp-core-ui .hpes-settings-top {
+		bottom: 68px;
+	}
+
+	/* Room for the bar, so it never covers the last field on the page. */
+	.hpes-design-form {
+		padding-bottom: 56px;
+	}
+
+	.hpes-compose__label {
+		flex: 1 1 100%;
+	}
+}
+
+/* Sortable headers
+   ------------------------------------------------------------------------
+   The clickable part is a real <button> inside the <th>, not the cell itself:
+   a th with a click handler is unreachable from a keyboard and announces
+   nothing, while a button is focusable and named for free. */
+
+.hpes__sort-button {
+	align-items: center;
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	gap: 4px;
+	padding: 0;
+	text-align: left;
+}
+
+.hpes__sort-button:hover,
+.hpes__sort-button:focus {
+	color: var(--hpes-accent, #2271b1);
+}
+
+.hpes__sort-arrow::after {
+	content: "\2195";
+	font-size: 11px;
+	opacity: .35;
+}
+
+.hpes__sortable.is-ascending .hpes__sort-arrow::after {
+	content: "\2191";
+	opacity: 1;
+}
+
+.hpes__sortable.is-descending .hpes__sort-arrow::after {
+	content: "\2193";
+	opacity: 1;
+}
+
+/* Shared settings chrome
+   ------------------------------------------------------------------------
+   Copied from the reference implementation (resources/hivepress-settings.md,
+   "The settings anchor nav: one shared marker class"). The shared marker
+   classes carry no styling at all; everything here hangs off this plugin's own
+   prefixed class, so one plugin's chrome can never restyle another's.
+
+   NOTHING HERE PAINTS THE TWO BUTTONS. They carry core's own `button` and
+   `button-primary` classes and WordPress supplies the colours, because every
+   user picks an Admin Colour Scheme and each one repaints those classes. A hex
+   here would match the default scheme and no other. Layout only.
+   ------------------------------------------------------------------------ */
+
+:root {
+	--hpes-admin-bar: 32px;
+}
+
+@media screen and (max-width: 782px) {
+	:root {
+		--hpes-admin-bar: 46px;
+	}
+}
+
+/* The admin bar stops being fixed below 601px and scrolls away with the page, so nothing needs to
+   clear it there. */
+@media screen and (max-width: 600px) {
+	:root {
+		--hpes-admin-bar: 0px;
+	}
+}
+
+.hpes-settings-nav {
+	align-items: center;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 8px;
+	margin: 16px 0;
+	padding: 12px 16px;
+	position: sticky;
+	top: var(--hpes-admin-bar);
+	z-index: 100;
+}
+
+.hpes-settings-nav__label {
+	color: #50575e;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.6;
+}
+
+.hpes-settings-nav a {
+	border: 1px solid #dcdcde;
+	border-radius: 9999px;
+	display: inline-block;
+	font-size: 12px;
+	line-height: 1.6;
+	padding: 3px 10px;
+	text-decoration: none;
+}
+
+.hpes-settings-nav a:hover,
+.hpes-settings-nav a:focus {
+	border-color: #2271b1;
+}
+
+/*
+ * `writing-mode: vertical-rl` is what makes the Save control sideways, and the choice is not
+ * cosmetic: it turns the LAYOUT BOX on its side, so the control is about 36px wide and as tall as
+ * its label. Rotating a horizontal box with `transform` instead leaves the box its original width,
+ * reserving a wide strip of the page and covering whatever is under it.
+ */
+.wp-core-ui .hpes-settings-save {
+	border-inline-end: 0;
+	border-radius: 4px 0 0 4px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+	display: block;
+	font-size: 13px;
+	height: auto;
+	letter-spacing: .2px;
+	line-height: 1.4;
+	padding: 14px 10px;
+
+	/* Physical `right`, not `inset-inline-end`: a logical inset resolves against the ELEMENT'S own
+	   writing mode, so on a vertical-rl box the inline axis is the vertical one and the control
+	   would pin to the wrong edge. */
+	position: fixed;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	writing-mode: vertical-rl;
+	z-index: 100;
+}
+
+.hpes-settings-save .dashicons {
+	display: none;
+}
+
+/*
+ * The one core declaration these two controls have to undo. wp-admin's buttons.css sets
+ * `line-height: 1.9` on a dashicon inside a button, which drops the glyph onto the text baseline of
+ * an ordinary horizontal button. Both of these centre their glyph with flexbox instead, so the glyph
+ * keeps its 20px box but is drawn inside a 38px line box and paints low while the BOX measures as
+ * perfectly centred - an alignment fault with nothing visibly misaligned.
+ */
+.wp-core-ui .hpes-settings-save .dashicons,
+.wp-core-ui .hpes-settings-top .dashicons {
+	line-height: 1;
+}
+
+.wp-core-ui .hpes-settings-top {
+	align-items: center;
+	bottom: 20px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+	display: flex;
+	height: 40px;
+	inset-inline-end: 20px;
+	justify-content: center;
+	padding: 0;
+	position: fixed;
+	border-radius: 50%;
+	width: 40px;
+	z-index: 100;
+}
+
+.wp-core-ui .hpes-settings-top[hidden] {
+	display: none;
+}
+
+/*
+ * On a phone the sideways Save tab would sit over the fields and the two round buttons would fight
+ * for the same corner, so Save becomes a bar along the bottom. 782px is where wp-admin itself
+ * switches to its touch layout. The .wp-core-ui prefix is carried down here too: a media query
+ * grants no extra specificity, so without it the tab would stay sideways on a phone.
+ */
+@media screen and (max-width: 782px) {
+
+	.wp-core-ui .hpes-settings-save {
+		align-items: center;
+		border-inline-end: 0;
+		border-radius: 0;
+		bottom: 0;
+		display: flex;
+		gap: 6px;
+		justify-content: center;
+		left: 0;
+		padding: 12px;
+		right: 0;
+		top: auto;
+		transform: none;
+		writing-mode: horizontal-tb;
+	}
+
+	/* The text runs left to right again down here, so the tick reads. */
+	.hpes-settings-save .dashicons {
+		display: inline-flex;
+		font-size: 16px;
+		height: 16px;
+		width: 16px;
+	}
+
+	.wp-core-ui .hpes-settings-top {
+		bottom: 68px;
+	}
+
+	/* Room for the bar, so it never covers the last field on the page. */
+	.hpes-design-form {
+		padding-bottom: 56px;
+	}
+
+	.hpes-compose__label {
+		flex: 1 1 100%;
+	}
+}
+
+/* Sortable headers
+   ------------------------------------------------------------------------
+   The clickable part is a real <button> inside the <th>, not the cell itself:
+   a th with a click handler is unreachable from a keyboard and announces
+   nothing, while a button is focusable and named for free. */
+
+.hpes__sort-button {
+	align-items: center;
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	gap: 4px;
+	padding: 0;
+	text-align: left;
+}
+
+.hpes__sort-button:hover,
+.hpes__sort-button:focus {
+	color: var(--hpes-accent, #2271b1);
+}
+
+.hpes__sort-arrow::after {
+	content: "\2195";
+	font-size: 11px;
+	opacity: .35;
+}
+
+.hpes__sortable.is-ascending .hpes__sort-arrow::after {
+	content: "\2191";
+	opacity: 1;
+}
+
+.hpes__sortable.is-descending .hpes__sort-arrow::after {
+	content: "\2193";
+	opacity: 1;
+}
+
+/* Settings fields on a narrow screen
+   ------------------------------------------------------------------------ */
+
+/*
+ * Core's responsive form-table rule names input types one at a time
+ * (wp-admin/css/forms.css:1708) and stops at text, email and password. A
+ * HivePress URL or number field is none of those, so it keeps the desktop
+ * `width:25em` - 400px once core bumps mobile inputs to 16px - inside a 368px
+ * wrap. Measured at 390px on 2026-09-01: the logo URL field was 400px, which
+ * widened the whole form table to 402px and made the page scroll sideways.
+ *
+ * Written type-agnostically so a field type HivePress adds later is covered
+ * too, with the controls meant to stay small excluded: checkboxes and radios,
+ * buttons, the colour picker, and core's own `small-text`, which core
+ * deliberately holds at `width:auto` in this same media query.
+ */
+@media screen and (max-width: 782px) {
+
+	.hpes .form-table td input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not(.wp-color-picker):not(.small-text),
+	.hpes .form-table td select,
+	.hpes .form-table td textarea {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+}

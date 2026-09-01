@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset name="Email Studio for HivePress">
+	<description>HivePress coding standards.</description>
+
+	<exclude-pattern>vendor/*</exclude-pattern>
+
+	<rule ref="WordPress">
+		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict"/>
+		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+		<exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
+		<exclude name="Squiz.Commenting.FileComment.WrongStyle"/>
+		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+		<exclude name="Generic.Commenting.DocComment.MissingShort"/>
+	</rule>
+
+	<!-- HivePress uses short array syntax. The sniff moved namespaces in newer
+	     WordPress standards, so both homes are silenced. -->
+	<rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">
+		<severity>0</severity>
+	</rule>
+
+	<rule ref="Universal.Arrays.DisallowShortArraySyntax.Found">
+		<severity>0</severity>
+	</rule>
+
+	<!-- HivePress core hook callbacks name the model parameter $object. -->
+	<rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames.objectFound">
+		<severity>0</severity>
+	</rule>
+
+	<rule ref="Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction">
+		<severity>0</severity>
+	</rule>
+
+	<!-- The plugin header declares "Requires PHP: 7.4", matching HivePress core, so compatibility
+	     is checked from that version upwards. HivePress is a hard dependency: a site below its
+	     floor cannot run this plugin at all. -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibility"/>
+
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
+</ruleset>

@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.3.1)'
+        required: true
+      notes:
+        description: 'Release notes (Markdown, optional — auto-generated if empty)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The zip is built from this named list, and anything not on it is silently
+      # missing from every download while working perfectly in local testing. So the
+      # list is load-bearing in both directions: add a top-level path to the plugin
+      # and it must be added here in the same commit.
+      #
+      # The `else` branch is the point of the loop. Without it a renamed file and a
+      # file that was never meant to ship look identical, and the zip builds happily
+      # either way. Keep the list truthful too - a warning that always fires is one
+      # nobody reads.
+      #
+      # phpcs.xml is tracked in this repo and deliberately absent from the list: it is
+      # dev tooling and must never reach a site.
+      - name: Build plugin zip
+        run: |
+          SLUG=email-studio-for-hivepress
+          mkdir -p "build/$SLUG"
+
+          for item in "$SLUG.php" uninstall.php updater.php readme.txt \
+                      includes assets templates languages; do
+            if [ -e "$item" ]; then
+              cp -r "$item" "build/$SLUG/"
+            else
+              echo "warning: $item is absent from the repository" >&2
+            fi
+          done
+
+          cd build
+          zip -r "$SLUG.zip" "$SLUG"
+          echo "shipped file list:"
+          find "$SLUG" -type f | sort
+
+      - name: Create or refresh the release (manual dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            git tag -f "$TAG" "$GITHUB_SHA"
+            git push --force origin "refs/tags/$TAG"
+            if [ -n "$NOTES" ]; then
+              gh release edit "$TAG" --notes "$NOTES" --repo "$GITHUB_REPOSITORY"
+            fi
+            gh release upload "$TAG" build/email-studio-for-hivepress.zip --clobber --repo "$GITHUB_REPOSITORY"
+          elif [ -n "$NOTES" ]; then
+            gh release create "$TAG" build/email-studio-for-hivepress.zip --title "$TAG" --notes "$NOTES" --target "$GITHUB_SHA" --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" build/email-studio-for-hivepress.zip --title "$TAG" --generate-notes --target "$GITHUB_SHA" --repo "$GITHUB_REPOSITORY"
+          fi
+
+      - name: Upload asset to the release
+        if: github.event_name == 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "$GITHUB_REF_NAME" build/email-studio-for-hivepress.zip --clobber --repo "$GITHUB_REPOSITORY"

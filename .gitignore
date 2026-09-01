@@ -1,0 +1,17 @@
+# Build output
+/build/
+/dist/
+
+# Composer/npm dependencies, if this plugin ever gains any.
+#
+# ANCHORED with a leading slash on purpose. An unanchored `vendor/` matches at any
+# depth, so it would also swallow a bundled `assets/vendor/...` - the push succeeds,
+# the workflow builds, the release looks finished, and the bundled asset is simply
+# missing with nothing reporting it.
+/vendor/
+/node_modules/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*~
