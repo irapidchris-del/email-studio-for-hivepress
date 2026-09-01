@@ -62,6 +62,12 @@ final class Hpes_Design extends Component {
 	 * - `button`   turn an automatically linked URL in the body into a button.
 	 * - `card`     how the body sits on the background.
 	 *
+	 * **That list is exhaustive, and it is a promise.** Every flag here is read by the wrapper, so
+	 * adding one that nothing reads leaves a setting that looks meaningful in this file and does
+	 * nothing at all to an email. There was an `align` key doing exactly that until 1.3.2: six
+	 * per-template values, never once read, describing behaviour the renderer had no idea about.
+	 * Adding a flag means changing the wrapper in the same edit, or not adding it.
+	 *
 	 * @return array
 	 */
 	public function get_templates() {
@@ -69,7 +75,6 @@ final class Hpes_Design extends Component {
 			'clean'   => [
 				'label'   => esc_html__( 'Clean', 'email-studio-for-hivepress' ),
 				'header'  => 'plain',
-				'align'   => 'left',
 				'heading' => false,
 				'button'  => false,
 				'card'    => 'accent-top',
@@ -78,7 +83,6 @@ final class Hpes_Design extends Component {
 			'boxed'   => [
 				'label'   => esc_html__( 'Boxed', 'email-studio-for-hivepress' ),
 				'header'  => 'rule',
-				'align'   => 'center',
 				'heading' => false,
 				'button'  => false,
 				'card'    => 'rounded',
@@ -87,7 +91,6 @@ final class Hpes_Design extends Component {
 			'bold'    => [
 				'label'   => esc_html__( 'Bold', 'email-studio-for-hivepress' ),
 				'header'  => 'accent',
-				'align'   => 'center',
 				'heading' => false,
 				'button'  => true,
 				'card'    => 'plain',
@@ -96,7 +99,6 @@ final class Hpes_Design extends Component {
 			'banner'  => [
 				'label'   => esc_html__( 'Banner', 'email-studio-for-hivepress' ),
 				'header'  => 'accent',
-				'align'   => 'center',
 				'heading' => 'banner',
 				'button'  => true,
 				'card'    => 'plain',
@@ -105,7 +107,6 @@ final class Hpes_Design extends Component {
 			'panel'   => [
 				'label'   => esc_html__( 'Panel', 'email-studio-for-hivepress' ),
 				'header'  => 'dark',
-				'align'   => 'left',
 				'heading' => 'card',
 				'button'  => true,
 				'card'    => 'accent-side',
@@ -114,7 +115,6 @@ final class Hpes_Design extends Component {
 			'minimal' => [
 				'label'   => esc_html__( 'Minimal', 'email-studio-for-hivepress' ),
 				'header'  => 'plain',
-				'align'   => 'center',
 				'heading' => false,
 				'button'  => false,
 				'card'    => 'none',
