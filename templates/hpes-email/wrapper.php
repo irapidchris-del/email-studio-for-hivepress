@@ -76,10 +76,19 @@ if ( ! empty( $hpes_design['button'] ) && $hpes_is_plain ) {
 	$hpes_body = preg_replace_callback(
 		'#<a\s[^>]*href=[\'"]([^\'"]+)[\'"][^>]*>\s*\1\s*</a>#i',
 		function ( $matches ) use ( $hpes_design, $hpes_font ) {
-			return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0;"><tr><td bgcolor="' . esc_attr( $hpes_design['accent'] ) . '" style="border-radius:4px;">'
+			/*
+			 * Centred with a full-width outer table and `align="center"` on its cell, not with
+			 * `margin:0 auto` on the button itself. Outlook on Windows renders through Word, which
+			 * ignores auto margins on a table, so a margin-centred button stays hard left there
+			 * while looking correct everywhere else. The `align` attribute is the one instruction
+			 * every client honours, and the surrounding cell's own text-align cannot override it.
+			 */
+			return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0;"><tr><td align="center">'
+				. '<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td bgcolor="' . esc_attr( $hpes_design['accent'] ) . '" style="border-radius:4px;">'
 				. '<a href="' . esc_url( $matches[1] ) . '" style="display:inline-block;padding:12px 24px;font-family:' . esc_attr( $hpes_font ) . ';font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;">'
 				. esc_html__( 'View details', 'email-studio-for-hivepress' )
-				. '</a></td></tr></table>';
+				. '</a></td></tr></table>'
+				. '</td></tr></table>';
 		},
 		$hpes_body,
 		1

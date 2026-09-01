@@ -4,7 +4,7 @@ Contributors: ChrisB
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,10 @@ whether your site managed to hand the message over at all.
 4. The full token list, including the attributes HivePress leaves out.
 
 == Changelog ==
+
+= 1.3.2 =
+* The button on Bold, Banner and Panel is now centred in the message rather than sitting against the
+  left edge.
 
 = 1.3.1 =
 * New: a Header Bar Colour setting, for the templates that have a bar across the top - Bold, Banner
