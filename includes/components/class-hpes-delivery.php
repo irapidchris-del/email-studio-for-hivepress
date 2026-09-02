@@ -88,6 +88,9 @@ final class Hpes_Delivery extends Component {
 		// and Email::send() returning.
 		add_action( 'wp_mail_failed', [ $this, 'record_failure' ] );
 
+		// Keeps test sends out of the notifications feed. See skip_test_notification().
+		add_filter( 'hpnf_notification_process_email', [ $this, 'skip_test_notification' ] );
+
 		parent::__construct( $args );
 	}
 
@@ -164,6 +167,35 @@ final class Hpes_Delivery extends Component {
 	 */
 	public function set_testing( $testing ) {
 		$this->testing = (bool) $testing;
+	}
+
+	/**
+	 * Whether a test send is in progress.
+	 *
+	 * @return bool
+	 */
+	public function is_testing() {
+		return (bool) $this->testing;
+	}
+
+	/**
+	 * Keeps a test send out of a member's notifications feed.
+	 *
+	 * Previews and test sends deliberately go through HivePress's real send path, so that what an
+	 * owner checks is exactly what a member would receive. The cost is that anything listening for
+	 * a send treats a test as a real event: Notifications for HivePress hooks
+	 * `hivepress/v1/emails/{type}/send` for every enabled type, so Chris's own test sends turned up
+	 * in his notifications feed on 2026-09-02.
+	 *
+	 * Answered from here rather than from that plugin, because this is the plugin doing the unusual
+	 * thing and so the one that should declare it. Costs nothing when Notifications is absent: the
+	 * filter simply never runs.
+	 *
+	 * @param bool $process Whether to turn this email into a notification.
+	 * @return bool
+	 */
+	public function skip_test_notification( $process ) {
+		return $this->testing ? false : $process;
 	}
 
 	/**

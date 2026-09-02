@@ -4,7 +4,7 @@ Contributors: ChrisB
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,13 @@ whether your site managed to hand the message over at all.
 4. The full token list, including the attributes HivePress leaves out.
 
 == Changelog ==
+
+= 1.4.0 =
+* Fixed: a test email you send to yourself no longer turns up in your notifications feed as though
+  it were a real event. Tests deliberately go out through the same path a real email does, so that
+  what you check is exactly what a member would receive - which meant anything listening for a send
+  treated the test as the real thing. Needs Notifications for HivePress 1.6.0 or later; with any
+  other extension, or none, nothing changes.
 
 = 1.3.2 =
 * The button on Bold, Banner and Panel is now centred in the message rather than sitting against the
