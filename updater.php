@@ -60,6 +60,16 @@ function get_latest_release( $force = false ) {
 	$cached = get_site_transient( UPDATE_CACHE_KEY );
 
 	if ( ! $force && is_array( $cached ) ) {
+		/*
+		 * A cached answer is served at once, but one older than an hour is refreshed behind the
+		 * scenes when someone is on the Plugins screen. Two releases inside the six-hour cache
+		 * life otherwise meant a site updated to the middle one first and only saw the newer one
+		 * after the cache turned over.
+		 */
+		if ( $cached && isset( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], [ 'plugins.php', 'update-core.php' ], true ) && time() - (int) ( isset( $cached['fetched_at'] ) ? $cached['fetched_at'] : 0 ) > HOUR_IN_SECONDS ) {
+			schedule_release_refresh();
+		}
+
 		return $cached ? $cached : null;
 	}
 
@@ -95,6 +105,10 @@ function get_latest_release( $force = false ) {
 	}
 
 	// Failures are cached briefly so the lookup is not repeated on every admin page load.
+	if ( is_array( $release ) && $release ) {
+		$release['fetched_at'] = time();
+	}
+
 	set_site_transient( UPDATE_CACHE_KEY, $release, $release ? 6 * HOUR_IN_SECONDS : HOUR_IN_SECONDS );
 
 	return $release ? $release : null;
@@ -771,3 +785,187 @@ function fix_update_directory( $source, $remote_source, $upgrader, $hook_extra =
 }
 
 add_filter( 'upgrader_source_selection', __NAMESPACE__ . '\\fix_update_directory', 10, 4 );
+
+/**
+ * Puts the cached release into WordPress's update list whenever the list lacks it.
+ *
+ * Core builds that list in wp_update_plugins(), which stamps last_checked BEFORE it calls
+ * api.wordpress.org and returns early, without asking any Update URI plugin, when that call fails
+ * or times out (wp-includes/update.php, the is_wp_error check after wp_remote_post). The stamp
+ * then keeps the empty list for up to twelve hours. That is how the second of two updates
+ * failed with "up to date" straight after the first succeeded: the first update wiped the list,
+ * the rebuild on the next click lost the wordpress.org race, and only Check for updates, which
+ * wipes the stamp, put the entry back. Reading the answer into the list here means the release
+ * this plugin already knows about is offered whatever wordpress.org did.
+ *
+ * The same read drops an entry that has become stale, so a list built before an update does not
+ * keep offering the version that is now installed.
+ *
+ * @param object|false $transient The update_plugins transient.
+ * @return object|false
+ */
+function inject_update( $transient ) {
+	if ( ! is_object( $transient ) ) {
+		return $transient;
+	}
+
+	$basename = plugin_basename( HP_EMAIL_STUDIO_FILE );
+	$release  = get_site_transient( UPDATE_CACHE_KEY );
+	$version  = get_version();
+
+	if ( ! $basename || ! is_array( $release ) || empty( $release['version'] ) || empty( $release['package'] ) ) {
+		return $transient;
+	}
+
+	if ( version_compare( $release['version'], $version, '>' ) ) {
+		if ( ! isset( $transient->response ) || ! is_array( $transient->response ) ) {
+			$transient->response = [];
+		}
+
+		if ( ! isset( $transient->response[ $basename ] ) ) {
+			$transient->response[ $basename ] = (object) [
+				'id'          => 'https://github.com/' . UPDATE_REPO,
+				'slug'        => UPDATE_SLUG,
+				'plugin'      => $basename,
+				'new_version' => $release['version'],
+				'url'         => isset( $release['url'] ) ? $release['url'] : '',
+				'package'     => $release['package'],
+			];
+		}
+
+		if ( isset( $transient->no_update[ $basename ] ) ) {
+			unset( $transient->no_update[ $basename ] );
+		}
+	} elseif ( isset( $transient->response[ $basename ] ) ) {
+		$offered = $transient->response[ $basename ];
+		$offered = is_object( $offered ) && isset( $offered->new_version ) ? $offered->new_version : '';
+
+		if ( ! $offered || version_compare( $offered, $version, '<=' ) ) {
+			unset( $transient->response[ $basename ] );
+		}
+	}
+
+	return $transient;
+}
+
+/**
+ * Adds the bulk action to the Plugins screen. Registered by one copy of this updater only.
+ *
+ * @param array<string, string> $actions Bulk actions.
+ * @return array<string, string>
+ */
+function add_bulk_check( $actions ) {
+	if ( current_user_can( 'update_plugins' ) ) {
+		$actions['hpx_check_updates'] = __( 'Check for updates', 'email-studio-for-hivepress' );
+	}
+
+	return $actions;
+}
+
+/**
+ * Answers the bulk action for this plugin: a fresh release lookup when it was selected.
+ *
+ * @param string   $redirect Redirect URL.
+ * @param string   $action Bulk action name.
+ * @param string[] $plugin_files Selected plugin basenames.
+ * @return string
+ */
+function handle_bulk_check( $redirect, $action, $plugin_files ) {
+	if ( 'hpx_check_updates' === $action && current_user_can( 'update_plugins' ) && in_array( plugin_basename( HP_EMAIL_STUDIO_FILE ), (array) $plugin_files, true ) ) {
+		get_latest_release( true );
+	}
+
+	return $redirect;
+}
+
+/**
+ * Rebuilds the update list once every copy has answered, and names the result in the redirect.
+ *
+ * Runs after every handle_bulk_check() (priority 20 against their 10), from the one copy that
+ * registered the action.
+ *
+ * @param string   $redirect Redirect URL.
+ * @param string   $action Bulk action name.
+ * @param string[] $plugin_files Selected plugin basenames.
+ * @return string
+ */
+function finish_bulk_check( $redirect, $action, $plugin_files ) {
+	if ( 'hpx_check_updates' !== $action || ! current_user_can( 'update_plugins' ) ) {
+		return $redirect;
+	}
+
+	wp_clean_plugins_cache();
+	wp_update_plugins();
+
+	$current   = get_site_transient( 'update_plugins' );
+	$available = 0;
+
+	foreach ( (array) $plugin_files as $file ) {
+		if ( is_object( $current ) && isset( $current->response[ $file ] ) ) {
+			++$available;
+		}
+	}
+
+	return add_query_arg(
+		[
+			'hpx_checked'   => count( (array) $plugin_files ),
+			'hpx_available' => $available,
+		],
+		$redirect
+	);
+}
+
+/**
+ * Shows the bulk check result.
+ *
+ * @return void
+ */
+function show_bulk_check_notice() {
+	// Reads two counts the bulk handler put in its own redirect; the values only pick a sentence.
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	if ( ! isset( $_GET['hpx_checked'] ) || ! current_user_can( 'update_plugins' ) ) {
+		return;
+	}
+
+	$checked   = absint( wp_unslash( $_GET['hpx_checked'] ) );
+	$available = isset( $_GET['hpx_available'] ) ? absint( wp_unslash( $_GET['hpx_available'] ) ) : 0;
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+	if ( $available ) {
+		/* translators: 1: number of plugins checked, 2: number with an update available. */
+		$message = sprintf( _n( 'Checked %1$s plugin for updates: %2$s can be updated.', 'Checked %1$s plugins for updates: %2$s can be updated.', $checked, 'email-studio-for-hivepress' ), number_format_i18n( $checked ), number_format_i18n( $available ) );
+	} else {
+		/* translators: %s: number of plugins checked. */
+		$message = sprintf( _n( 'Checked %s plugin for updates: it is up to date.', 'Checked %s plugins for updates: all are up to date.', $checked, 'email-studio-for-hivepress' ), number_format_i18n( $checked ) );
+	}
+
+	echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+}
+
+/**
+ * Keeps an updating row full width on phones.
+ *
+ * Below 783px core lays every list-table row out as a wrapping flex row, and the single cell of
+ * a plugin's update row then shrinks to the width of its "Updating..." text. Printed once, by the
+ * copy of this updater that registered the bulk action.
+ *
+ * @return void
+ */
+function print_plugins_screen_styles() {
+	echo '<style id="hpx-plugins-screen">@media screen and (max-width: 782px) { .wp-list-table.plugins .plugin-update-tr .plugin-update { flex: 1 1 100%; width: 100%; box-sizing: border-box; } }</style>';
+}
+
+add_filter( 'site_transient_update_plugins', __NAMESPACE__ . '\\inject_update' );
+add_filter( 'handle_bulk_actions-plugins', __NAMESPACE__ . '\\handle_bulk_check', 10, 3 );
+
+// The Plugins screen bulk action, its notice and the row style: one copy of this updater
+// registers them (whichever loads first); every copy answers the action for its own plugin.
+if ( empty( $GLOBALS['hpx_update_check_bulk'] ) ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- shared handshake between every copy of this updater; a plugin-specific prefix would defeat it.
+	$GLOBALS['hpx_update_check_bulk'] = 'email-studio-for-hivepress'; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- shared handshake between every copy of this updater; a plugin-specific prefix would defeat it.
+
+	add_filter( 'bulk_actions-plugins', __NAMESPACE__ . '\\add_bulk_check' );
+	add_filter( 'handle_bulk_actions-plugins', __NAMESPACE__ . '\\finish_bulk_check', 20, 3 );
+	add_action( 'admin_notices', __NAMESPACE__ . '\\show_bulk_check_notice' );
+	add_action( 'network_admin_notices', __NAMESPACE__ . '\\show_bulk_check_notice' );
+	add_action( 'admin_print_styles-plugins.php', __NAMESPACE__ . '\\print_plugins_screen_styles' );
+}
