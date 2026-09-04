@@ -166,10 +166,13 @@ final class Hpes_Studio extends Component {
 	 */
 	protected function get_script_data() {
 		return [
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-			'nonce'   => wp_create_nonce( self::NONCE_ACTION ),
+			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+			'nonce'     => wp_create_nonce( self::NONCE_ACTION ),
 
-			'strings' => [
+			// The saved WooCommerce layout, so the panel's switch starts on it.
+			'wooLayout' => hivepress()->hpes_woo->get_layout(),
+
+			'strings'   => [
 				'testSending'      => __( 'Sending...', 'email-studio-for-hivepress' ),
 				'genericError'     => __( 'Something went wrong. Please try again.', 'email-studio-for-hivepress' ),
 				'confirmReset'     => __( 'Reset this email to the wording it came with? Your edited version moves to the Trash, so you can restore it from there if you change your mind.', 'email-studio-for-hivepress' ),
@@ -394,6 +397,7 @@ final class Hpes_Studio extends Component {
 		?>
 		<tr class="hpes__row<?php echo $email['disabled'] ? ' is-disabled' : ''; ?>"
 			data-name="<?php echo esc_attr( $email['name'] ); ?>"
+			data-woocommerce="<?php echo ! empty( $email['woocommerce'] ) ? '1' : '0'; ?>"
 			data-source="<?php echo esc_attr( $email['source'] ); ?>"
 			data-status="<?php echo esc_attr( $status ); ?>"
 			data-sort-label="<?php echo esc_attr( $email['label'] ); ?>"
@@ -809,6 +813,16 @@ final class Hpes_Studio extends Component {
 						<button type="button" class="button hpes-version is-active" data-default="0"><?php esc_html_e( 'Your version', 'email-studio-for-hivepress' ); ?></button>
 						<button type="button" class="button hpes-version" data-default="1"><?php esc_html_e( 'Original', 'email-studio-for-hivepress' ); ?></button>
 					</div>
+
+					<?php
+					// The layout switch, for WooCommerce emails only. It changes the preview, never
+					// the setting: the active button starts on whatever the setting says.
+					?>
+					<div class="hpes-panel__group hpes-panel__layouts" role="group" aria-label="<?php esc_attr_e( 'Layout to preview', 'email-studio-for-hivepress' ); ?>" hidden>
+						<?php foreach ( hivepress()->hpes_woo->get_layouts() as $hpes_layout => $hpes_layout_label ) : ?>
+							<button type="button" class="button hpes-layout" data-layout="<?php echo esc_attr( $hpes_layout ); ?>"><?php echo esc_html( $hpes_layout_label ); ?></button>
+						<?php endforeach; ?>
+					</div>
 				</div>
 
 				<div class="hpes-panel__stage">
@@ -938,7 +952,12 @@ final class Hpes_Studio extends Component {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verify_request() ran above.
 		$show_default = ! empty( $_GET['default'] );
 
-		$output = hivepress()->hpes_catalogue->render_preview( $name, $show_default );
+		// The layout switch in the panel, for WooCommerce emails. Validated by the renderer against
+		// the list of layouts, so an unknown value previews the saved one.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verify_request() ran above.
+		$layout = isset( $_GET['layout'] ) ? sanitize_key( wp_unslash( $_GET['layout'] ) ) : '';
+
+		$output = hivepress()->hpes_catalogue->render_preview( $name, $show_default, $layout );
 
 		$this->send_preview( $output );
 	}

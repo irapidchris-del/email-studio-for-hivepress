@@ -4,7 +4,7 @@ Contributors: ChrisB
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.1
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,11 @@ whether your site managed to hand the message over at all.
 4. The full token list, including the attributes HivePress leaves out.
 
 == Changelog ==
+
+= 1.5.0 =
+* New: a "WooCommerce Email Layout" setting. WooCommerce emails can now be sent inside the same design wrapper as every HivePress email, with WooCommerce's own heading carried across and the order table keeping its WooCommerce styling, or with the message body only. The default is unchanged: WooCommerce's own layout.
+* New: the preview panel has a layout switch for WooCommerce emails, so the three layouts can be compared side by side before the setting is changed. The switch changes the preview only.
+* Changed: the Banner and Panel templates can be handed a heading separate from the subject line, which is what lets a WooCommerce email keep its own heading inside the wrapper.
 
 = 1.4.1 =
 * Fixed: updating two of these extensions one after the other could fail on the second with "up to date" until Check for updates was pressed again. WordPress rebuilds its update list after each update by asking wordpress.org first, and gives up on the whole list when that call is slow; the plugin now keeps its own update in the list regardless.

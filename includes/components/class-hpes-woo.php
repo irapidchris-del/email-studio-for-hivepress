@@ -5,13 +5,21 @@
  * Brings WooCommerce's own transactional emails into the Email Studio list, so a marketplace owner
  * has one screen showing everything the site sends rather than two.
  *
- * **The design wrapper is deliberately NOT applied to them.** WooCommerce has a complete email
+ * **By default the design wrapper is NOT applied to them.** WooCommerce has a complete email
  * template system of its own, with its own header, footer, base colour and background settings under
  * WooCommerce > Settings > Emails, and many sites add a WooCommerce email designer on top of that.
- * Wrapping a WooCommerce email in this plugin's template would put two headers and two colour
- * schemes in one message - which is exactly the fault this plugin exists to remove. So Email Studio
- * lists, previews, tests and switches WooCommerce emails, and leaves their appearance to
- * WooCommerce.
+ * Wrapping a whole WooCommerce email in this plugin's template would put two headers and two colour
+ * schemes in one message - which is exactly the fault this plugin exists to remove. So out of the
+ * box Email Studio lists, previews, tests and switches WooCommerce emails, and leaves their
+ * appearance to WooCommerce.
+ *
+ * **Since 1.5.0 the owner can choose the wrapper instead** (the "WooCommerce email layout" setting).
+ * That path never nests one frame inside another: WooCommerce still builds its complete email and
+ * inlines its stylesheet, then wrap_content() lifts the message out of WooCommerce's frame - the
+ * `#body_content_inner` element its own header and footer templates draw around every message - and
+ * renders that, with its inlined styling intact, inside this plugin's wrapper. The order table keeps
+ * WooCommerce's styling because that styling is already on its elements by then; only the header,
+ * footer and background are this plugin's.
  *
  * Editing follows the same principle: the Edit button opens WooCommerce's own settings screen for
  * that email rather than a second place to change the same subject and heading.
@@ -40,11 +48,35 @@ final class Hpes_Woo extends Component {
 	const PREFIX = 'wc:';
 
 	/**
+	 * Option holding the chosen WooCommerce email layout.
+	 */
+	const LAYOUT_OPTION = 'hp_email_studio_woo_layout';
+
+	/**
 	 * Cached email list.
 	 *
 	 * @var array|null
 	 */
 	protected $emails = null;
+
+	/**
+	 * The heading and email object of the WooCommerce email being built right now.
+	 *
+	 * WooCommerce fires `woocommerce_email_header` with both while it renders a message
+	 * (templates/emails/email-header.php, via WC_Emails::email_header()), and only the finished HTML
+	 * reaches `woocommerce_mail_content` afterwards. Remembering them here is what lets the wrapper
+	 * carry the email's own heading and subject.
+	 *
+	 * @var array|null
+	 */
+	protected $current = null;
+
+	/**
+	 * A layout to preview instead of the saved one, or null to follow the setting.
+	 *
+	 * @var string|null
+	 */
+	protected $layout_override = null;
 
 	/**
 	 * Class constructor.
@@ -57,7 +89,214 @@ final class Hpes_Woo extends Component {
 		// whether to take them over.
 		add_action( 'init', [ $this, 'apply_design' ], 20 );
 
+		// The wrapper. Priority 1 on the header so the heading is known before any other listener;
+		// priority 20 on the content so the message is wrapped after WooCommerce has inlined its
+		// styles and after anything else that edits the finished HTML at the default priority.
+		add_action( 'woocommerce_email_header', [ $this, 'remember_email' ], 1, 2 );
+		add_filter( 'woocommerce_mail_content', [ $this, 'wrap_content' ], 20 );
+
 		parent::__construct( $args );
+	}
+
+	/**
+	 * Gets the layouts a WooCommerce email can be sent in, keyed by the stored value.
+	 *
+	 * @return array
+	 */
+	public function get_layouts() {
+		return [
+			'woocommerce'  => esc_html__( 'WooCommerce layout', 'email-studio-for-hivepress' ),
+			'wrapper'      => esc_html__( 'Email Studio wrapper', 'email-studio-for-hivepress' ),
+			'wrapper_body' => esc_html__( 'Email Studio wrapper, message body only', 'email-studio-for-hivepress' ),
+		];
+	}
+
+	/**
+	 * Gets the saved layout, validated against the list the settings screen offers.
+	 *
+	 * @return string
+	 */
+	public function get_layout() {
+		$layout = (string) get_option( self::LAYOUT_OPTION );
+
+		return isset( $this->get_layouts()[ $layout ] ) ? $layout : 'woocommerce';
+	}
+
+	/**
+	 * Remembers the email WooCommerce is rendering, for the wrapper.
+	 *
+	 * @param string $heading Email heading.
+	 * @param object $email WooCommerce email object, when WooCommerce passes one.
+	 */
+	public function remember_email( $heading, $email = null ) {
+		$this->current = [
+			'heading' => (string) $heading,
+			'email'   => $email instanceof \WC_Email ? $email : null,
+		];
+	}
+
+	/**
+	 * Puts the design wrapper around a finished WooCommerce email, when the owner has asked for it.
+	 *
+	 * Runs for real sends (WC_Email::send(), includes/emails/class-wc-email.php:1233, WooCommerce
+	 * 11.0.1) and for previews (EmailPreview::render_preview_email(), :372), which both pass the
+	 * inlined HTML through `woocommerce_mail_content`. One filter therefore keeps what the owner
+	 * previews and what the customer receives the same.
+	 *
+	 * The message body is taken from `#body_content_inner`. If a site's overridden templates have
+	 * no such element there is nothing safe to lift, and WooCommerce's own email is sent unchanged
+	 * rather than a broken one.
+	 *
+	 * @param string $content Finished email HTML.
+	 * @return string
+	 */
+	public function wrap_content( $content ) {
+		$layout = $this->layout_override ? $this->layout_override : $this->get_layout();
+
+		if ( 'woocommerce' === $layout || ! hivepress()->hpes_design->is_enabled() ) {
+			return $content;
+		}
+
+		$body = $this->extract_body( (string) $content );
+
+		if ( '' === $body ) {
+			return $content;
+		}
+
+		$heading = $this->current ? $this->current['heading'] : '';
+		$subject = '';
+
+		if ( $this->current && $this->current['email'] ) {
+			try {
+				$subject = (string) $this->current['email']->get_subject();
+			} catch ( \Throwable $exception ) {
+				$subject = '';
+			}
+		}
+
+		$wrapped = $this->render_wrapper( $body, $heading, $subject, 'wrapper' === $layout );
+
+		return '' === $wrapped ? $content : $wrapped;
+	}
+
+	/**
+	 * Lifts the message out of a finished WooCommerce email.
+	 *
+	 * Parsed rather than matched with a pattern: the message holds nested tables and divs of its
+	 * own (the order details template wraps its table in a div), and a pattern that stops at the
+	 * first closing tag returns a fragment. libxml is told the document is UTF-8 through the XML
+	 * declaration trick, because DOMDocument otherwise assumes Latin-1 and mangles every accented
+	 * character in a customer's name or address.
+	 *
+	 * @param string $content Finished email HTML.
+	 * @return string The inner HTML of the message element, or an empty string when there is none.
+	 */
+	protected function extract_body( $content ) {
+		if ( '' === $content || false === strpos( $content, 'body_content_inner' ) || ! class_exists( '\DOMDocument' ) ) {
+			return '';
+		}
+
+		$previous = libxml_use_internal_errors( true );
+
+		try {
+			$dom = new \DOMDocument();
+
+			$dom->loadHTML( '<?xml encoding="UTF-8">' . $content, LIBXML_NOWARNING | LIBXML_NOERROR );
+
+			$xpath = new \DOMXPath( $dom );
+			$nodes = $xpath->query( '//*[@id="body_content_inner"]' );
+
+			if ( ! $nodes || ! $nodes->length ) {
+				return '';
+			}
+
+			$inner = '';
+
+			foreach ( $nodes->item( 0 )->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DOM API property.
+				$inner .= $dom->saveHTML( $child );
+			}
+
+			return trim( $inner );
+		} catch ( \Throwable $exception ) {
+			return '';
+		} finally {
+			libxml_clear_errors();
+			libxml_use_internal_errors( $previous );
+		}
+	}
+
+	/**
+	 * Renders a WooCommerce message inside the design wrapper.
+	 *
+	 * The same `Blocks\Template( 'email' )` render every HivePress email goes through, with a
+	 * stand-in email carrying WooCommerce's message as its body, so the wrapper and every filter on
+	 * it behave exactly as they do for a HivePress email.
+	 *
+	 * The heading: WooCommerce prints one in its own header ("Thank you for your order"), and
+	 * dropping that frame would drop the sentence with it. Templates that draw a heading (Banner,
+	 * Panel) are handed it in place of the subject; the others get it as a heading at the top of
+	 * the message. The body-only layout leaves it out altogether.
+	 *
+	 * @param string $body Message HTML, styles already inlined by WooCommerce.
+	 * @param string $heading WooCommerce's heading for the email.
+	 * @param string $subject The email's subject line.
+	 * @param bool   $with_heading Whether to carry the heading into the wrapper.
+	 * @return string
+	 */
+	protected function render_wrapper( $body, $heading, $subject, $with_heading ) {
+		$design = hivepress()->hpes_design->get_settings();
+
+		$template_heading = '';
+
+		if ( $with_heading && '' !== $heading ) {
+			if ( $design['heading'] ) {
+				$template_heading = $heading;
+			} else {
+				$body = '<h2 style="margin:0 0 16px;font-family:Helvetica,Arial,sans-serif;font-size:20px;line-height:1.3;font-weight:bold;color:' . esc_attr( $design['accent'] ) . ';">' . esc_html( $heading ) . '</h2>' . $body;
+			}
+		}
+
+		/*
+		 * The footer, with the tokens this message cannot fill already dropped. The wrapper resolves
+		 * a HivePress email's own tokens into the footer; a WooCommerce message has none, so a
+		 * footer written for members ("as %user_name%") is cleaned the same way it is when
+		 * WooCommerce prints it. Handed over by filtering the option for this one render only.
+		 */
+		$footer = $this->get_footer_text( $design );
+
+		$supply_footer = function () use ( $footer ) {
+			return $footer;
+		};
+
+		add_filter( 'option_hp_email_studio_footer_text', $supply_footer );
+		add_filter( 'default_option_hp_email_studio_footer_text', $supply_footer );
+
+		try {
+			$email = new \HivePress\Emails\Hpes_Woo_Message(
+				[
+					'subject' => $subject,
+					'body'    => $body,
+				]
+			);
+
+			$output = ( new \HivePress\Blocks\Template(
+				[
+					'template' => 'email',
+
+					'context'  => [
+						'email'        => $email,
+						'hpes_heading' => $template_heading,
+					],
+				]
+			) )->render();
+		} catch ( \Throwable $exception ) {
+			$output = '';
+		} finally {
+			remove_filter( 'option_hp_email_studio_footer_text', $supply_footer );
+			remove_filter( 'default_option_hp_email_studio_footer_text', $supply_footer );
+		}
+
+		return (string) $output;
 	}
 
 	/**
@@ -78,7 +317,13 @@ final class Hpes_Woo extends Component {
 	 * unticking the box restores whatever the owner had set in WooCommerce, untouched.
 	 */
 	public function apply_design() {
-		if ( ! $this->is_available() || ! get_option( 'hp_email_studio_woo_design' ) ) {
+		if ( ! $this->is_available() ) {
+			return;
+		}
+
+		// The wrapper layouts imply the colours: WooCommerce still styles the order table from its
+		// own base and text colours, and those have to match the frame now drawn around it.
+		if ( ! get_option( 'hp_email_studio_woo_design' ) && 'woocommerce' === $this->get_layout() ) {
 			return;
 		}
 
@@ -340,10 +585,15 @@ final class Hpes_Woo extends Component {
 	 * not promise to keep, so every use of it is guarded and the preview simply reports that it is
 	 * unavailable rather than failing the screen.
 	 *
+	 * The preview goes through `woocommerce_mail_content` like a real send, so it wears whatever
+	 * layout the setting says. A layout passed in previews that layout instead, for the panel's
+	 * compare switch, and changes nothing that is saved.
+	 *
 	 * @param string $name Email name.
+	 * @param string $layout Layout to preview, or an empty string for the saved one.
 	 * @return string
 	 */
-	public function render_preview( $name ) {
+	public function render_preview( $name, $layout = '' ) {
 		$email = $this->get_email( $name );
 
 		if ( ! $email ) {
@@ -356,6 +606,8 @@ final class Hpes_Woo extends Component {
 			return $this->render_unavailable();
 		}
 
+		$this->layout_override = isset( $this->get_layouts()[ $layout ] ) ? $layout : null;
+
 		try {
 			$preview = wc_get_container()->get( $preview_class );
 
@@ -364,6 +616,8 @@ final class Hpes_Woo extends Component {
 			$output = $preview->render();
 		} catch ( \Throwable $exception ) {
 			return $this->render_unavailable();
+		} finally {
+			$this->layout_override = null;
 		}
 
 		return (string) $output;

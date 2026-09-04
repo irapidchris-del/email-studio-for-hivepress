@@ -19,6 +19,7 @@
  * (`hivepress/includes/blocks/class-part.php:56`).
  *
  * @var \HivePress\Emails\Email $email The email being rendered.
+ * @var string $hpes_heading Optional. Heading to draw instead of the subject; an empty string draws none.
  *
  * @package HivePress\EmailStudio
  */
@@ -33,6 +34,11 @@ $hpes_design = hivepress()->hpes_design->get_settings();
 $hpes_site_name = get_bloginfo( 'name' );
 $hpes_site_url  = home_url( '/' );
 $hpes_subject   = (string) $email->get_subject();
+
+// The heading the Banner and Panel templates draw. It is the subject unless the caller says
+// otherwise: a WooCommerce message carries WooCommerce's own heading here, and the body-only
+// layout passes an empty string so nothing is drawn while the document title keeps the subject.
+$hpes_heading_text = isset( $hpes_heading ) ? (string) $hpes_heading : $hpes_subject;
 
 // The one font stack every client on every platform already has. It was briefly a setting and was
 // dropped: three near-identical choices is not a decision worth asking somebody to make.
@@ -249,9 +255,9 @@ $hpes_footer_html = [
 										<div style="width:48px;height:3px;background:<?php echo esc_attr( $hpes_design['accent'] ); ?>;margin:<?php echo esc_attr( $hpes_rule_margin ); ?>;font-size:0;line-height:0;">&nbsp;</div>
 									<?php endif; ?>
 
-									<?php if ( 'banner' === $hpes_design['heading'] && $hpes_subject ) : ?>
+									<?php if ( 'banner' === $hpes_design['heading'] && $hpes_heading_text ) : ?>
 										<div style="margin:16px 0 0;font-family:<?php echo esc_attr( $hpes_font ); ?>;font-size:24px;line-height:1.3;font-weight:bold;color:<?php echo esc_attr( $hpes_header_ink ); ?>;">
-											<?php echo esc_html( $hpes_subject ); ?>
+											<?php echo esc_html( $hpes_heading_text ); ?>
 										</div>
 									<?php endif; ?>
 								</td>
@@ -262,9 +268,9 @@ $hpes_footer_html = [
 					<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="<?php echo $hpes_card; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built above from whitelisted values, each escaped individually. ?>">
 						<tr>
 							<td style="padding:24px;font-family:<?php echo esc_attr( $hpes_font ); ?>;font-size:15px;line-height:1.6;color:<?php echo esc_attr( $hpes_design['text'] ); ?>;text-align:left;">
-								<?php if ( 'card' === $hpes_design['heading'] && $hpes_subject ) : ?>
+								<?php if ( 'card' === $hpes_design['heading'] && $hpes_heading_text ) : ?>
 									<div style="margin:0 0 16px;font-family:<?php echo esc_attr( $hpes_font ); ?>;font-size:20px;line-height:1.3;font-weight:bold;color:<?php echo esc_attr( $hpes_design['accent'] ); ?>;">
-										<?php echo esc_html( $hpes_subject ); ?>
+										<?php echo esc_html( $hpes_heading_text ); ?>
 									</div>
 								<?php endif; ?>
 

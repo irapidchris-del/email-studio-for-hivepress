@@ -118,6 +118,7 @@
 			'?action=hpes_preview' +
 			'&name=' + encodeURIComponent( current.name ) +
 			'&default=' + ( current.useDefault ? '1' : '0' ) +
+			'&layout=' + encodeURIComponent( current.layout || '' ) +
 			'&_wpnonce=' + encodeURIComponent( data.nonce ) +
 
 			// Cache buster, so switching between versions always refetches rather than showing the
@@ -160,6 +161,7 @@
 		current.name = options.name || '';
 		current.useDefault = false;
 		current.compose = !! options.compose;
+		current.layout = '';
 
 		title.textContent = options.label || '';
 		subjectLine.textContent = options.subject || '';
@@ -170,6 +172,17 @@
 		panel.querySelectorAll( '.hpes-version' ).forEach( function( button ) {
 			button.classList.toggle( 'is-active', '0' === button.getAttribute( 'data-default' ) );
 		} );
+
+		// The layout switch only applies to WooCommerce emails, and starts on the saved layout.
+		var layouts = panel.querySelector( '.hpes-panel__layouts' );
+
+		if ( layouts ) {
+			layouts.hidden = ! options.woocommerce;
+
+			panel.querySelectorAll( '.hpes-layout' ).forEach( function( button ) {
+				button.classList.toggle( 'is-active', button.getAttribute( 'data-layout' ) === ( data.wooLayout || 'woocommerce' ) );
+			} );
+		}
 
 		setDevice( 'desktop' );
 		say( '', false );
@@ -203,7 +216,8 @@
 			name: row.getAttribute( 'data-name' ),
 			label: row.getAttribute( 'data-label' ),
 			subject: subject ? subject.textContent : '',
-			customised: '1' === row.getAttribute( 'data-customised' )
+			customised: '1' === row.getAttribute( 'data-customised' ),
+			woocommerce: '1' === row.getAttribute( 'data-woocommerce' )
 		} );
 	}
 
@@ -485,6 +499,20 @@
 
 		if ( device ) {
 			setDevice( device.getAttribute( 'data-device' ) );
+
+			return;
+		}
+
+		var layout = event.target.closest( '.hpes-layout' );
+
+		if ( layout ) {
+			current.layout = layout.getAttribute( 'data-layout' );
+
+			panel.querySelectorAll( '.hpes-layout' ).forEach( function( button ) {
+				button.classList.toggle( 'is-active', button === layout );
+			} );
+
+			loadPreview();
 
 			return;
 		}

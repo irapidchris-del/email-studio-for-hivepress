@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Email Studio for HivePress 1.3.2\n"
+"Project-Id-Version: Email Studio for HivePress 1.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/email-studio-for-hivepress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-01T20:48:16+00:00\n"
+"POT-Creation-Date: 2026-09-04T10:48:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: email-studio-for-hivepress\n"
@@ -67,63 +67,63 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:570
-#: includes/components/class-hpes-catalogue.php:587
+#: includes/components/class-hpes-catalogue.php:571
+#: includes/components/class-hpes-catalogue.php:588
 msgid "Alex"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:571
+#: includes/components/class-hpes-catalogue.php:572
 msgid "Riverside Studios"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:572
-#: includes/components/class-hpes-catalogue.php:586
+#: includes/components/class-hpes-catalogue.php:573
+#: includes/components/class-hpes-catalogue.php:587
 msgid "Sam"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:574
+#: includes/components/class-hpes-catalogue.php:575
 msgid "Photographer needed for a weekend event"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:580
+#: includes/components/class-hpes-catalogue.php:581
 msgid "Bank transfer"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:581
+#: includes/components/class-hpes-catalogue.php:582
 msgid "Professional"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:582
+#: includes/components/class-hpes-catalogue.php:583
 msgid "Those dates have just been taken."
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:583
+#: includes/components/class-hpes-catalogue.php:584
 msgid "Sorry, this item is out of stock."
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:584
+#: includes/components/class-hpes-catalogue.php:585
 msgid "Hello, is this still available next weekend?"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:585
+#: includes/components/class-hpes-catalogue.php:586
 msgid "Thank you for the kind words, see you again soon."
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:588
+#: includes/components/class-hpes-catalogue.php:589
 msgid "last month"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:600
+#: includes/components/class-hpes-catalogue.php:601
 msgid "[your new password]"
 msgstr ""
 
 #. translators: %s: the name of an email token, with underscores replaced by spaces.
-#: includes/components/class-hpes-catalogue.php:619
+#: includes/components/class-hpes-catalogue.php:620
 #, php-format
 msgid "[%s]"
 msgstr ""
 
-#: includes/components/class-hpes-catalogue.php:638
+#: includes/components/class-hpes-catalogue.php:639
 msgid "Sunny studio flat with a river view"
 msgstr ""
 
@@ -143,27 +143,27 @@ msgstr ""
 msgid "Specific people"
 msgstr ""
 
-#: includes/components/class-hpes-design.php:70
+#: includes/components/class-hpes-design.php:76
 msgid "Clean"
 msgstr ""
 
-#: includes/components/class-hpes-design.php:79
+#: includes/components/class-hpes-design.php:84
 msgid "Boxed"
 msgstr ""
 
-#: includes/components/class-hpes-design.php:88
+#: includes/components/class-hpes-design.php:92
 msgid "Bold"
 msgstr ""
 
-#: includes/components/class-hpes-design.php:97
+#: includes/components/class-hpes-design.php:100
 msgid "Banner"
 msgstr ""
 
-#: includes/components/class-hpes-design.php:106
+#: includes/components/class-hpes-design.php:108
 msgid "Panel"
 msgstr ""
 
-#: includes/components/class-hpes-design.php:115
+#: includes/components/class-hpes-design.php:116
 msgid "Minimal"
 msgstr ""
 
@@ -324,7 +324,7 @@ msgid "Removes every Email Studio setting when the plugin is deleted from the Pl
 msgstr ""
 
 #: includes/components/class-hpes-settings.php:334
-msgid "WooCommerce styles its own emails, so by default this plugin leaves them alone and only lists them. Turning this on hands WooCommerce your colours, your logo and your footer wording instead of its own, so a customer gets the same look whether the email came from HivePress or from the shop."
+msgid "WooCommerce styles its own emails, so by default this plugin leaves them alone and only lists them. You can hand WooCommerce your colours, logo and footer wording so its layout matches yours, or go further and send WooCommerce emails inside the same wrapper as every HivePress email. Use Preview on any WooCommerce email to compare the layouts before you change anything."
 msgstr ""
 
 #. translators: %s: the name of another plugin that also designs WooCommerce emails.
@@ -343,12 +343,20 @@ msgid "Use my design for WooCommerce emails too"
 msgstr ""
 
 #: includes/components/class-hpes-settings.php:359
-msgid "Applies your accent colour, background, text colour, logo and footer to WooCommerce's own email template. WooCommerce keeps its own layout, so an order table still looks like an order table; only the branding around it changes. Your WooCommerce email settings are left untouched, so unticking this puts everything back."
+msgid "Applies your accent colour, background, text colour, logo and footer to WooCommerce's own email template. WooCommerce keeps its own layout, so an order table still looks like an order table; only the branding around it changes. Your WooCommerce email settings are left untouched, so unticking this puts everything back. The wrapper layouts below apply the colours whether or not this is ticked."
+msgstr ""
+
+#: includes/components/class-hpes-settings.php:365
+msgid "WooCommerce Email Layout"
+msgstr ""
+
+#: includes/components/class-hpes-settings.php:366
+msgid "\"WooCommerce layout\" sends WooCommerce's own frame: its header, its heading and its footer. \"Email Studio wrapper\" lifts the message out of that frame and sends it inside your design template, with WooCommerce's heading at the top of the message; the order table keeps its WooCommerce styling. \"Message body only\" does the same without the heading. Previews and test sends use whichever you choose here."
 msgstr ""
 
 #: includes/components/class-hpes-studio.php:75
 #: includes/components/class-hpes-studio.php:76
-#: includes/components/class-hpes-studio.php:222
+#: includes/components/class-hpes-studio.php:225
 msgid "Email Studio"
 msgstr ""
 
@@ -364,472 +372,476 @@ msgstr ""
 msgid "Choose image"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:173
+#: includes/components/class-hpes-studio.php:176
 msgid "Sending..."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:174
+#: includes/components/class-hpes-studio.php:177
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:175
+#: includes/components/class-hpes-studio.php:178
 msgid "Reset this email to the wording it came with? Your edited version moves to the Trash, so you can restore it from there if you change your mind."
 msgstr ""
 
 #. translators: %s: the name of the email being disabled.
-#: includes/components/class-hpes-studio.php:178
+#: includes/components/class-hpes-studio.php:181
 #, php-format
 msgid "Disabling \"%s\" stops people completing something they have already started, and there is no other way for them to finish it. Are you sure?"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:180
+#: includes/components/class-hpes-studio.php:183
 msgid "Clear the whole delivery log? This cannot be undone."
 msgstr ""
 
 #. translators: %s: the number of people the message will go to.
-#: includes/components/class-hpes-studio.php:183
+#: includes/components/class-hpes-studio.php:186
 #, php-format
 msgid "Send this email to %s people? It goes out in the background and cannot be recalled once it starts."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:185
+#: includes/components/class-hpes-studio.php:188
 msgid "Send this email to 1 person? It goes out in the background and cannot be recalled once it starts."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:187
-#: includes/components/class-hpes-studio.php:1323
-#: includes/components/class-hpes-studio.php:1375
+#: includes/components/class-hpes-studio.php:190
+#: includes/components/class-hpes-studio.php:1342
+#: includes/components/class-hpes-studio.php:1394
 msgid "Add a subject and a message before sending."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:188
+#: includes/components/class-hpes-studio.php:191
 msgid "Nobody matches that audience, so there is nothing to send."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:189
+#: includes/components/class-hpes-studio.php:192
 msgid "Counting..."
 msgstr ""
 
 #. translators: %s: the number of people in the chosen audience.
-#: includes/components/class-hpes-studio.php:192
+#: includes/components/class-hpes-studio.php:195
 #, php-format
 msgid "This will go to %s people."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:194
+#: includes/components/class-hpes-studio.php:197
 msgid "This will go to 1 person."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:196
+#: includes/components/class-hpes-studio.php:199
 msgid "Sorted A to Z. Click to reverse."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:197
+#: includes/components/class-hpes-studio.php:200
 msgid "Sorted Z to A. Click to reverse."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:199
+#: includes/components/class-hpes-studio.php:202
 msgid "Jump to a section:"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:200
+#: includes/components/class-hpes-studio.php:203
 msgid "Save Changes"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:201
+#: includes/components/class-hpes-studio.php:204
 msgid "Back to top"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:223
+#: includes/components/class-hpes-studio.php:226
 msgid "Every email your site can send, with a preview of exactly what lands in the inbox. Emails added by extensions you install later appear here on their own."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:231
+#: includes/components/class-hpes-studio.php:234
 msgid "Emails available"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:232
+#: includes/components/class-hpes-studio.php:235
 msgid "Customised by you"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:233
-#: includes/components/class-hpes-studio.php:310
-#: includes/components/class-hpes-studio.php:440
+#: includes/components/class-hpes-studio.php:236
+#: includes/components/class-hpes-studio.php:313
+#: includes/components/class-hpes-studio.php:444
 msgid "Disabled"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:236
-#: includes/components/class-hpes-studio.php:646
+#: includes/components/class-hpes-studio.php:239
+#: includes/components/class-hpes-studio.php:650
 msgid "Design"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:237
+#: includes/components/class-hpes-studio.php:240
 msgid "On"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:237
+#: includes/components/class-hpes-studio.php:240
 msgid "Off"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:282
+#: includes/components/class-hpes-studio.php:285
 msgid "Emails"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:285
+#: includes/components/class-hpes-studio.php:288
 msgid "No editable emails were found. This usually means HivePress has only just been installed; add a listing type or activate an extension and they will appear here."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:290
+#: includes/components/class-hpes-studio.php:293
 msgid "Search emails"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:291
+#: includes/components/class-hpes-studio.php:294
 msgid "Search emails..."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:295
+#: includes/components/class-hpes-studio.php:298
 msgid "Filter by plugin"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:297
+#: includes/components/class-hpes-studio.php:300
 msgid "All plugins"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:305
+#: includes/components/class-hpes-studio.php:308
 msgid "Filter by status"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:307
+#: includes/components/class-hpes-studio.php:310
 msgid "All statuses"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:308
-#: includes/components/class-hpes-studio.php:442
+#: includes/components/class-hpes-studio.php:311
+#: includes/components/class-hpes-studio.php:446
 msgid "Customised"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:309
-#: includes/components/class-hpes-studio.php:444
+#: includes/components/class-hpes-studio.php:312
+#: includes/components/class-hpes-studio.php:448
 msgid "Original wording"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:334
-#: includes/components/class-hpes-studio.php:697
+#: includes/components/class-hpes-studio.php:337
+#: includes/components/class-hpes-studio.php:701
 msgid "Email"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:335
+#: includes/components/class-hpes-studio.php:338
 msgid "Plugin"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:336
+#: includes/components/class-hpes-studio.php:339
 msgid "Goes to"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:337
+#: includes/components/class-hpes-studio.php:340
 msgid "Status"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:338
+#: includes/components/class-hpes-studio.php:341
 msgid "Actions"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:349
+#: includes/components/class-hpes-studio.php:352
 msgid "No emails match what you typed."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:435
+#: includes/components/class-hpes-studio.php:439
 msgid "Not stated"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:448
+#: includes/components/class-hpes-studio.php:452
 msgid "People cannot finish signing in or signing up without this one."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:448
+#: includes/components/class-hpes-studio.php:452
 msgid "Essential"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:452
+#: includes/components/class-hpes-studio.php:456
 msgid "Its wording is empty, so HivePress will not send it. Add wording back to enable it."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:454
+#: includes/components/class-hpes-studio.php:458
 msgid "Disabled in WooCommerce."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:460
-#: includes/components/class-hpes-studio.php:550
+#: includes/components/class-hpes-studio.php:464
+#: includes/components/class-hpes-studio.php:554
 msgid "Preview"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:464
-#: includes/components/class-hpes-studio.php:466
-#: includes/components/class-hpes-studio.php:469
+#: includes/components/class-hpes-studio.php:468
+#: includes/components/class-hpes-studio.php:470
+#: includes/components/class-hpes-studio.php:473
 msgid "Edit"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:467
+#: includes/components/class-hpes-studio.php:471
 msgid "Reset"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:474
+#: includes/components/class-hpes-studio.php:478
 msgid "Enable"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:474
+#: includes/components/class-hpes-studio.php:478
 msgid "Disable"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:490
+#: includes/components/class-hpes-studio.php:494
 msgid "Email Composer"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:492
+#: includes/components/class-hpes-studio.php:496
 msgid "Write a one-off email and send it to your members, wrapped in the same design as everything else. It goes out in the background a batch at a time, so a large list never holds up your site. It cannot be recalled once it starts, so preview it and send yourself a test first."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:496
+#: includes/components/class-hpes-studio.php:500
 msgid "Send to"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:506
+#: includes/components/class-hpes-studio.php:510
 msgid "People"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:511
-#: includes/components/class-hpes-studio.php:604
+#: includes/components/class-hpes-studio.php:515
+#: includes/components/class-hpes-studio.php:608
 msgid "Subject"
 msgstr ""
 
 #. translators: 1: the user name token, 2: the site name token, 3: the year token. All three are filled in automatically and must be left exactly as they appear.
-#: includes/components/class-hpes-studio.php:540
+#: includes/components/class-hpes-studio.php:544
 #, php-format
 msgid "You can use %1$s for the person receiving it, plus %2$s and %3$s."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:551
+#: includes/components/class-hpes-studio.php:555
 msgid "Send test to me"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:552
+#: includes/components/class-hpes-studio.php:556
 msgid "Send to everyone chosen"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:597
+#: includes/components/class-hpes-studio.php:601
 msgid "Messages you have sent"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:603
-#: includes/components/class-hpes-studio.php:696
+#: includes/components/class-hpes-studio.php:607
+#: includes/components/class-hpes-studio.php:700
 msgid "When"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:605
+#: includes/components/class-hpes-studio.php:609
 msgid "Progress"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:615
+#: includes/components/class-hpes-studio.php:619
 msgid "Sending"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:617
+#: includes/components/class-hpes-studio.php:621
 msgid "Finished"
 msgstr ""
 
 #. translators: 1: emails sent so far, 2: the total, 3: how many failed.
-#: includes/components/class-hpes-studio.php:624
+#: includes/components/class-hpes-studio.php:628
 #, php-format
 msgid "%1$s of %2$s sent, %3$s failed"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:681
+#: includes/components/class-hpes-studio.php:685
 msgid "Recent deliveries"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:685
+#: includes/components/class-hpes-studio.php:689
 msgid "Clear log"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:690
+#: includes/components/class-hpes-studio.php:694
 msgid "Nothing sent yet. Emails your site sends from now on are listed here, so you can tell \"it never sent\" apart from \"it sent and did not arrive\"."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:698
+#: includes/components/class-hpes-studio.php:702
 msgid "To"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:699
+#: includes/components/class-hpes-studio.php:703
 msgid "Result"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:753
+#: includes/components/class-hpes-studio.php:757
 msgid "Test"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:764
+#: includes/components/class-hpes-studio.php:768
 msgid "Failed"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:769
+#: includes/components/class-hpes-studio.php:773
 msgid "Stopped"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:770
+#: includes/components/class-hpes-studio.php:774
 msgid "This email is disabled in the Studio."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:772
+#: includes/components/class-hpes-studio.php:776
 msgid "Sent"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:797
+#: includes/components/class-hpes-studio.php:801
 msgid "Close preview"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:803
+#: includes/components/class-hpes-studio.php:807
 msgid "Preview width"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:804
+#: includes/components/class-hpes-studio.php:808
 msgid "Desktop"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:805
+#: includes/components/class-hpes-studio.php:809
 msgid "Mobile"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:808
+#: includes/components/class-hpes-studio.php:812
 msgid "Which version to preview"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:809
+#: includes/components/class-hpes-studio.php:813
 msgid "Your version"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:810
+#: includes/components/class-hpes-studio.php:814
 msgid "Original"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:815
-msgid "Email preview"
-msgstr ""
-
-#: includes/components/class-hpes-studio.php:819
-msgid "Tokens you can use in this email"
-msgstr ""
-
-#: includes/components/class-hpes-studio.php:824
-msgid "Shown with sample details in place of the real ones. A test send goes to the address below with \"[Test]\" added to the subject."
-msgstr ""
-
-#: includes/components/class-hpes-studio.php:827
-msgid "Send a test to"
-msgstr ""
-
-#: includes/components/class-hpes-studio.php:828
-msgid "you@example.com"
+#: includes/components/class-hpes-studio.php:821
+msgid "Layout to preview"
 msgstr ""
 
 #: includes/components/class-hpes-studio.php:829
+msgid "Email preview"
+msgstr ""
+
+#: includes/components/class-hpes-studio.php:833
+msgid "Tokens you can use in this email"
+msgstr ""
+
+#: includes/components/class-hpes-studio.php:838
+msgid "Shown with sample details in place of the real ones. A test send goes to the address below with \"[Test]\" added to the subject."
+msgstr ""
+
+#: includes/components/class-hpes-studio.php:841
+msgid "Send a test to"
+msgstr ""
+
+#: includes/components/class-hpes-studio.php:842
+msgid "you@example.com"
+msgstr ""
+
+#: includes/components/class-hpes-studio.php:843
 msgid "Send test"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:859
+#: includes/components/class-hpes-studio.php:873
 msgid "Preview this email"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:861
+#: includes/components/class-hpes-studio.php:875
 msgid "Save your changes first to see them here."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:888
+#: includes/components/class-hpes-studio.php:902
 msgid "You are not allowed to preview emails."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:891
+#: includes/components/class-hpes-studio.php:905
 msgid "You are not allowed to do that."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:935
-#: includes/components/class-hpes-studio.php:979
-#: includes/components/class-hpes-studio.php:991
-#: includes/components/class-hpes-studio.php:1006
-#: includes/components/class-hpes-studio.php:1126
-#: includes/components/class-hpes-studio.php:1155
-#: includes/components/class-hpes-studio.php:1191
+#: includes/components/class-hpes-studio.php:949
+#: includes/components/class-hpes-studio.php:998
+#: includes/components/class-hpes-studio.php:1010
+#: includes/components/class-hpes-studio.php:1025
+#: includes/components/class-hpes-studio.php:1145
+#: includes/components/class-hpes-studio.php:1174
+#: includes/components/class-hpes-studio.php:1210
 msgid "That email could not be found."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:985
+#: includes/components/class-hpes-studio.php:1004
 msgid "This is a WooCommerce email, so it uses WooCommerce's own placeholders. You will find them on its settings screen."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1012
+#: includes/components/class-hpes-studio.php:1031
 msgid "That does not look like an email address."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1024
+#: includes/components/class-hpes-studio.php:1043
 msgid "Your site could not send the email. This is almost always the site's mail setup rather than the email itself, so an SMTP plugin is the usual fix."
 msgstr ""
 
 #. translators: %s: the address the test was sent to.
-#: includes/components/class-hpes-studio.php:1033
-#: includes/components/class-hpes-studio.php:1361
+#: includes/components/class-hpes-studio.php:1052
+#: includes/components/class-hpes-studio.php:1380
 #, php-format
 msgid "Test sent to %s."
 msgstr ""
 
 #. translators: %s: the email's own subject line.
-#: includes/components/class-hpes-studio.php:1108
-#: includes/components/class-hpes-woo.php:407
+#: includes/components/class-hpes-studio.php:1127
+#: includes/components/class-hpes-woo.php:661
 #, php-format
 msgid "[Test] %s"
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1141
+#: includes/components/class-hpes-studio.php:1160
 msgid "Disabled."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1141
+#: includes/components/class-hpes-studio.php:1160
 msgid "Enabled."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1161
+#: includes/components/class-hpes-studio.php:1180
 msgid "That email is already using its original wording."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1172
+#: includes/components/class-hpes-studio.php:1191
 msgid "That email could not be reset."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1175
+#: includes/components/class-hpes-studio.php:1194
 msgid "Reset to the original wording."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1205
-#: includes/components/class-hpes-studio.php:1341
+#: includes/components/class-hpes-studio.php:1224
+#: includes/components/class-hpes-studio.php:1360
 msgid "That email could not be built."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1220
+#: includes/components/class-hpes-studio.php:1239
 msgid "That email could not be created."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1251
+#: includes/components/class-hpes-studio.php:1270
 msgid "Log cleared."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1355
+#: includes/components/class-hpes-studio.php:1374
 msgid "Your site could not send the email. An SMTP plugin is the usual fix."
 msgstr ""
 
-#: includes/components/class-hpes-studio.php:1381
+#: includes/components/class-hpes-studio.php:1400
 msgid "Nobody matched that audience, so nothing was sent."
 msgstr ""
 
 #. translators: %s: how many people the message is going to.
-#: includes/components/class-hpes-studio.php:1388
+#: includes/components/class-hpes-studio.php:1407
 #, php-format
 msgid "Queued for %s person. It sends in the background; reload this page to see how far it has got."
 msgid_plural "Queued for %s people. It sends in the background; reload this page to see how far it has got."
@@ -866,56 +878,85 @@ msgstr ""
 msgid "A token with no value is replaced by nothing. To show something else instead, add %1$s and your wording before the closing %2$s, like %3$s."
 msgstr ""
 
-#: includes/components/class-hpes-woo.php:231
+#: includes/components/class-hpes-woo.php:108
+msgid "WooCommerce layout"
+msgstr ""
+
+#: includes/components/class-hpes-woo.php:109
+msgid "Email Studio wrapper"
+msgstr ""
+
+#: includes/components/class-hpes-woo.php:110
+msgid "Email Studio wrapper, message body only"
+msgstr ""
+
+#: includes/components/class-hpes-woo.php:476
 msgid "WooCommerce"
 msgstr ""
 
-#: includes/components/class-hpes-woo.php:284
+#: includes/components/class-hpes-woo.php:529
 msgid "Customer"
 msgstr ""
 
-#: includes/components/class-hpes-woo.php:296
+#: includes/components/class-hpes-woo.php:541
 msgid "Site admin"
 msgstr ""
 
-#: includes/components/class-hpes-woo.php:378
+#: includes/components/class-hpes-woo.php:632
 msgid "WooCommerce could not build a preview of this email on this site. You can still send yourself a test of it, and edit it under WooCommerce settings."
 msgstr ""
 
-#: templates/hpes-email/wrapper.php:89
+#: templates/hpes-email/wrapper.php:95
 msgid "View details"
 msgstr ""
 
-#: updater.php:621
+#: updater.php:635
 msgid "See the GitHub releases page for the changelog."
 msgstr ""
 
-#: updater.php:636
+#: updater.php:650
+#: updater.php:859
 msgid "Check for updates"
 msgstr ""
 
 #. translators: %s: new version number.
-#: updater.php:710
+#: updater.php:724
 #, php-format
 msgid "A new version of Email Studio for HivePress (%s) is available."
 msgstr ""
 
-#: updater.php:713
+#: updater.php:727
 msgid "Email Studio for HivePress is up to date."
 msgstr ""
 
-#: updater.php:716
+#: updater.php:730
 msgid "No releases have been published for Email Studio for HivePress yet, so there is nothing to update to. This is normal for a brand new copy and does not mean anything is wrong."
 msgstr ""
 
-#: updater.php:719
+#: updater.php:733
 msgid "GitHub limits how many update checks one server may make each hour, and this server has reached that limit. Nothing is wrong with the plugin or your site, and checking will work again within the hour."
 msgstr ""
 
-#: updater.php:722
+#: updater.php:736
 msgid "Could not reach GitHub to check for updates. Please try again later."
 msgstr ""
 
-#: updater.php:767
+#: updater.php:781
 msgid "Could not rename the update directory."
 msgstr ""
+
+#. translators: 1: number of plugins checked, 2: number with an update available.
+#: updater.php:936
+#, php-format
+msgid "Checked %1$s plugin for updates: %2$s can be updated."
+msgid_plural "Checked %1$s plugins for updates: %2$s can be updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of plugins checked.
+#: updater.php:939
+#, php-format
+msgid "Checked %s plugin for updates: it is up to date."
+msgid_plural "Checked %s plugins for updates: all are up to date."
+msgstr[0] ""
+msgstr[1] ""

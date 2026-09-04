@@ -440,14 +440,15 @@ final class Hpes_Catalogue extends Component {
 	 *
 	 * @param string $name Email name.
 	 * @param bool   $show_default Preview the shipped default rather than the owner's version.
+	 * @param string $layout For a WooCommerce email, the layout to preview; empty for the saved one.
 	 * @return string
 	 */
-	public function render_preview( $name, $show_default = false ) {
+	public function render_preview( $name, $show_default = false, $layout = '' ) {
 
-		// A WooCommerce email is rendered by WooCommerce, through its own preview class and its own
-		// template, because its appearance is WooCommerce's to own rather than this plugin's.
+		// A WooCommerce email is rendered by WooCommerce, through its own preview class, and then
+		// wrapped or not according to the layout setting (or the panel's compare switch).
 		if ( hivepress()->hpes_woo->is_woo_email( $name ) ) {
-			return hivepress()->hpes_woo->render_preview( $name );
+			return hivepress()->hpes_woo->render_preview( $name, $layout );
 		}
 
 		$email_class = hp\get_array_value( hivepress()->get_classes( 'emails' ), $name );

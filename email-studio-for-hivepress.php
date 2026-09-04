@@ -3,7 +3,7 @@
  * Plugin Name: Email Studio for HivePress
  * Plugin URI: https://github.com/irapidchris-del/email-studio-for-hivepress
  * Description: Gives HivePress emails a design makeover: a studio screen listing every email your site can send, live previews, test sends, and a styled template applied to all outgoing HivePress emails.
- * Version: 1.4.1
+ * Version: 1.5.0
  * Author: ChrisB @ HivePress Community
  * Author URI: https://community.hivepress.io/u/chrisb/summary
  * Text Domain: email-studio-for-hivepress
@@ -21,7 +21,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-define( 'HP_EMAIL_STUDIO_VERSION', '1.4.1' );
+define( 'HP_EMAIL_STUDIO_VERSION', '1.5.0' );
 define( 'HP_EMAIL_STUDIO_FILE', __FILE__ );
 
 /**

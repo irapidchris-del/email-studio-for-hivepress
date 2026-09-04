@@ -331,7 +331,7 @@ final class Hpes_Settings extends Component {
 			];
 		}
 
-		$description = esc_html__( 'WooCommerce styles its own emails, so by default this plugin leaves them alone and only lists them. Turning this on hands WooCommerce your colours, your logo and your footer wording instead of its own, so a customer gets the same look whether the email came from HivePress or from the shop.', 'email-studio-for-hivepress' );
+		$description = esc_html__( 'WooCommerce styles its own emails, so by default this plugin leaves them alone and only lists them. You can hand WooCommerce your colours, logo and footer wording so its layout matches yours, or go further and send WooCommerce emails inside the same wrapper as every HivePress email. Use Preview on any WooCommerce email to compare the layouts before you change anything.', 'email-studio-for-hivepress' );
 
 		/*
 		 * A second email designer would be fighting this one for the same emails, and the owner would
@@ -356,9 +356,18 @@ final class Hpes_Settings extends Component {
 				'email_studio_woo_design' => [
 					'label'       => esc_html__( 'WooCommerce Emails', 'email-studio-for-hivepress' ),
 					'caption'     => esc_html__( 'Use my design for WooCommerce emails too', 'email-studio-for-hivepress' ),
-					'description' => esc_html__( 'Applies your accent colour, background, text colour, logo and footer to WooCommerce\'s own email template. WooCommerce keeps its own layout, so an order table still looks like an order table; only the branding around it changes. Your WooCommerce email settings are left untouched, so unticking this puts everything back.', 'email-studio-for-hivepress' ),
+					'description' => esc_html__( 'Applies your accent colour, background, text colour, logo and footer to WooCommerce\'s own email template. WooCommerce keeps its own layout, so an order table still looks like an order table; only the branding around it changes. Your WooCommerce email settings are left untouched, so unticking this puts everything back. The wrapper layouts below apply the colours whether or not this is ticked.', 'email-studio-for-hivepress' ),
 					'type'        => 'checkbox',
 					'_order'      => 10,
+				],
+
+				'email_studio_woo_layout' => [
+					'label'       => esc_html__( 'WooCommerce Email Layout', 'email-studio-for-hivepress' ),
+					'description' => esc_html__( '"WooCommerce layout" sends WooCommerce\'s own frame: its header, its heading and its footer. "Email Studio wrapper" lifts the message out of that frame and sends it inside your design template, with WooCommerce\'s heading at the top of the message; the order table keeps its WooCommerce styling. "Message body only" does the same without the heading. Previews and test sends use whichever you choose here.', 'email-studio-for-hivepress' ),
+					'type'        => 'select',
+					'options'     => hivepress()->hpes_woo->get_layouts(),
+					'default'     => 'woocommerce',
+					'_order'      => 20,
 				],
 			],
 		];
