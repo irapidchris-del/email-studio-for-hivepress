@@ -365,8 +365,15 @@ final class Hpes_Settings extends Component {
 					'label'       => esc_html__( 'WooCommerce Email Layout', 'email-studio-for-hivepress' ),
 					'description' => esc_html__( '"WooCommerce layout" sends WooCommerce\'s own frame: its header, its heading and its footer. "Email Studio wrapper" lifts the message out of that frame and sends it inside your design template, with WooCommerce\'s heading at the top of the message; the order table keeps its WooCommerce styling. "Message body only" does the same without the heading. Previews and test sends use whichever you choose here.', 'email-studio-for-hivepress' ),
 					'type'        => 'select',
-					'options'     => hivepress()->hpes_woo->get_layouts(),
-					'default'     => 'woocommerce',
+
+					// The WooCommerce layout is stored as an empty string: core's Select adds an
+					// em-dash "nothing chosen" option whenever the list has no '' key
+					// (fields/class-select.php:176-178), and this setting has no "nothing"; the
+					// component reads '' as the WooCommerce layout.
+					'options'     => array_merge(
+						[ '' => hivepress()->hpes_woo->get_layouts()['woocommerce'] ],
+						array_diff_key( hivepress()->hpes_woo->get_layouts(), [ 'woocommerce' => true ] )
+					),
 					'_order'      => 20,
 				],
 			],
