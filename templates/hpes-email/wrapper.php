@@ -72,11 +72,9 @@ $hpes_is_plain = ! preg_match( '#<(?:p|div|table|ul|ol|h[1-6]|blockquote|section
  * to href - is what marks it as the call to action, and it is why a link somebody wrote themselves,
  * with real words for text, is left alone rather than being guessed at.
  *
- * Plain-text bodies only, for the same reason the paragraphs below are. Seen on staging on
- * 2026-09-01 against a hand-built email that already had its own "View Your Listing" button: the
- * sentence underneath it read "or by pasting the following link into your browser:", and turning
- * that link into a second button left the instruction describing something that was no longer
- * there. Somebody who has laid out their own email has already chosen their call to action.
+ * Plain-text bodies only, for the same reason the paragraphs below are. In a hand-built email
+ * that already has its own button, the sentence "or by pasting the following link into your
+ * browser:" would end up describing a link that had become a second button.
  */
 if ( ! empty( $hpes_design['button'] ) && $hpes_is_plain ) {
 	$hpes_body = preg_replace_callback(

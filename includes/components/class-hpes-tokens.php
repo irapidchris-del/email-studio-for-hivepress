@@ -5,20 +5,15 @@
  * Works out the full list of %tokens% an email can use, including the custom attributes HivePress
  * itself leaves out of the list it shows.
  *
- * **The gap this closes, measured on hivepress-dev 2026-08-31 against core 1.7.31.** Core builds the
- * token list on the email edit screen by looping a model's fields and skipping any field that
- * carries a `_model` argument (`hivepress/includes/components/class-email.php:209-226`). Every
- * taxonomy-backed attribute carries one, so the attributes a site owner is most likely to have
- * created - the dropdowns, "Condition", "Type", "Region" - are absent from the list, alongside every
- * checkbox attribute.
+ * **The gap this closes (core 1.7.31).** Core builds the token list on the email edit screen by
+ * looping a model's fields and skipping any field with a `_model` argument
+ * (`hivepress/includes/components/class-email.php`). Every taxonomy-backed attribute carries
+ * one, so dropdown attributes such as "Condition" or "Region", and every checkbox attribute,
+ * are missing from the list.
  *
- * They are absent from the *list* only. `hp\replace_tokens()` looks a field up in `_get_fields()`
- * and calls `get_display_value()` with no such exclusion (`hivepress/includes/helpers.php:355-372`),
- * so the tokens work perfectly and nothing tells the owner they exist. Measured against a real
- * published listing: all fifteen hidden tokens resolved, `%listing.condition%` to "New",
- * `%listing.region%` to "New York" and `%listing.categories%` to "For Sale".
- *
- * So this does not add a capability to HivePress. It advertises one HivePress already has.
+ * They are missing from the *list* only: `hp\replace_tokens()` resolves them with no such
+ * exclusion (`hivepress/includes/helpers.php`), so the tokens work and nothing tells the owner
+ * they exist. This advertises a capability HivePress already has.
  *
  * @package HivePress\EmailStudio\Components
  */
@@ -380,11 +375,9 @@ final class Hpes_Tokens extends Component {
 	/**
 	 * Picks a token from this email's own list to use in the fallback example.
 	 *
-	 * The example used to be a hard-coded `%listing.condition%`. Seen on staging on 2026-09-01,
-	 * where no Condition attribute exists: the help text was telling a site owner to copy a token
-	 * their site does not have, which for the audience this is written for - somebody building
-	 * their first WordPress site - is worse than no example. Taking one from the list printed
-	 * directly above means the example is always real, on every site.
+	 * The example used to be a hard-coded `%listing.condition%`, which told owners of sites with no
+	 * Condition attribute to copy a token they do not have. Taking one from the list printed directly
+	 * above means the example is always real.
 	 *
 	 * @param array $groups Token groups.
 	 * @return string

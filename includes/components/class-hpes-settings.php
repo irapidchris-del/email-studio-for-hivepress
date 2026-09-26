@@ -5,17 +5,14 @@
  * Defines the design settings and renders them on the Email Studio screen itself, rather than as a
  * tab under HivePress > Settings.
  *
- * **Why not a HivePress settings tab (decided with Chris, 2026-09-01).** The plugin is one idea -
- * look at your emails, change how they look, send yourself one - and splitting it across two screens
- * meant the controls that change the design were never on the same page as the preview that shows
- * it. Everything now lives on one screen with the preview a section away.
+ * **Why not a HivePress settings tab.** Splitting one idea (look at your emails, change how they
+ * look, send yourself one) across two screens kept the design controls away from the preview.
  *
- * **It is still WordPress's own Settings API**, registered against this plugin's own page and option
- * group and posting to `options.php` exactly as a HivePress tab does, with each field rendered and
- * validated by the same `\HivePress\Fields\*` object HivePress would have used
- * (`hivepress/includes/components/class-admin.php:287-325`, `:490-511`, `:520-567`). So the controls
- * look native, the tooltips and the `_parent` show/hide behave the same, and nothing here hand-rolls
- * saving or sanitising.
+ * **It is still WordPress's own Settings API**, registered against this plugin's page and option
+ * group and posting to `options.php` as a HivePress tab does, with each field rendered and
+ * validated by the same `\HivePress\Fields\*` object HivePress would use
+ * (`hivepress/includes/components/class-admin.php`). So the controls look native, tooltips and
+ * `_parent` show/hide behave the same, and nothing here hand-rolls saving or sanitising.
  *
  * @package HivePress\EmailStudio\Components
  */
